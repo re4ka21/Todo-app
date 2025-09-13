@@ -5,13 +5,14 @@ import TypeSelector from "../components/TypeSelector";
 import InputField from "../components/InputField";
 import CategoryPicker from "../components/CategoryPicker";
 import Attachments from "../components/Attachments";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function NewRequestScreen() {
   const [type, setType] = useState("request");
   const [category, setCategory] = useState("");
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header />
       <ScrollView contentContainerStyle={styles.content}>
         <TypeSelector type={type} setType={setType} />
@@ -25,7 +26,7 @@ export default function NewRequestScreen() {
         />
         <Attachments />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
