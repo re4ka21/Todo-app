@@ -2,7 +2,7 @@
 
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
-type SelectModalProps<T extends string> = {
+type Props<T extends string> = {
   visible: boolean;
   options?: T[];
   selected: T;
@@ -16,7 +16,7 @@ export default function SelectModal<T extends string>({
   selected,
   onSelect,
   onClose,
-}: SelectModalProps<T>) {
+}: Props<T>) {
   if (!options || options.length === 0) return null;
 
   return (

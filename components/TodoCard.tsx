@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-type TodoCardProps = {
+type Props = {
   todo: {
     id: string;
     title: string;
@@ -12,7 +12,7 @@ type TodoCardProps = {
   timeAgo: (date: string | Date) => string;
 };
 
-export default function TodoCard({ todo, onDelete, timeAgo }: TodoCardProps) {
+export default function TodoCard({ todo, onDelete, timeAgo }: Props) {
   const getStatusStyle = (status: string) => {
     switch (status) {
       case "open":

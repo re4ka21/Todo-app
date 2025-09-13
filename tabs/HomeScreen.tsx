@@ -1,13 +1,14 @@
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
   FlatList,
   TouchableOpacity,
   StyleSheet,
+  Animated,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTodos } from "../context/TodoContext";
-import { useState } from "react";
 import SearchBar from "../components/SearchBar";
 import TodoCard from "../components/TodoCard";
 import CategoryFilter from "../components/CategoryFilter";
@@ -33,18 +34,25 @@ export default function HomeScreen() {
     "Improvement",
   ] as const;
 
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  const topSpacerHeight = scrollY.interpolate({
+    inputRange: [0, 100], // скрол 0–100 px
+    outputRange: [5, 50], // висота spacer від 5 до 50
+    extrapolate: "clamp",
+  });
+
   const timeAgo = (date: string | Date) => {
     const now = new Date();
     const past = new Date(date);
     const diff = Math.floor((now.getTime() - past.getTime()) / 1000);
-
     if (diff < 60) return `${diff} sec ago`;
     if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
     if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
     return `${Math.floor(diff / 86400)} days ago`;
   };
 
-  const todosData = todos
+  const filteredTodos = todos
     .filter(
       (t) =>
         t.title.toLowerCase().includes(search.toLowerCase()) &&
@@ -55,34 +63,61 @@ export default function HomeScreen() {
       ...t,
     }));
 
-  return (
-    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
-      {/* Фіксований пошук зверху */}
-      <Text style={styles.title}>Tickets</Text>
-      <SearchBar value={search} onChangeText={setSearch} />
+  const flatListData: Array<{ type: string; key: string; content?: any }> = [
+    { type: "title", key: "title" },
+    { type: "sticky", key: "search" },
+    { type: "category", key: "category" },
+    ...filteredTodos.map((todo) => ({
+      type: "todo",
+      key: todo.id,
+      content: todo,
+    })),
+  ];
 
-      {/* FlatList зі скролом */}
-      <FlatList
-        data={todosData}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item, index }) => (
-          <TodoCard
-            todo={item}
-            onDelete={() => removeTodo(index)}
-            timeAgo={timeAgo}
-          />
+  return (
+    <SafeAreaView style={styles.container}>
+      <Animated.FlatList
+        data={flatListData}
+        keyExtractor={(item) => item.key}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
         )}
-        contentContainerStyle={styles.listContent}
-        // Категорії скроляться разом зі списком
-        ListHeaderComponent={
-          <View style={styles.filterWrapper}>
-            <CategoryFilter
-              options={categories}
-              selected={categoryFilter}
-              onSelect={setCategoryFilter}
+        renderItem={({ item }) => {
+          if (item.type === "title") {
+            return <Text style={styles.title}>Tickets</Text>;
+          }
+          if (item.type === "sticky") {
+            return (
+              <View style={styles.stickyWrapper}>
+                <Animated.View style={{ height: topSpacerHeight }} />
+                <SearchBar value={search} onChangeText={setSearch} />
+              </View>
+            );
+          }
+          if (item.type === "category") {
+            return (
+              <CategoryFilter
+                options={categories}
+                selected={categoryFilter}
+                onSelect={setCategoryFilter}
+              />
+            );
+          }
+          return (
+            <TodoCard
+              todo={item.content}
+              onDelete={() =>
+                removeTodo(
+                  filteredTodos.findIndex((t) => t.id === item.content.id)
+                )
+              }
+              timeAgo={timeAgo}
             />
-          </View>
-        }
+          );
+        }}
+        stickyHeaderIndices={[1]}
+        contentContainerStyle={styles.listContent}
       />
 
       <TouchableOpacity onPress={clearTodo} style={styles.clearButton}>
@@ -95,17 +130,17 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     backgroundColor: "#F3F4F6",
-    marginTop: 46,
+    paddingHorizontal: 16,
   },
   title: {
     fontSize: 34,
     fontWeight: "700",
-    marginBottom: 12,
+    marginVertical: 16,
   },
-  filterWrapper: {
-    paddingVertical: 16,
+  stickyWrapper: {
+    backgroundColor: "#F3F4F6",
+    zIndex: 10,
   },
   listContent: {
     paddingBottom: 20,
@@ -115,7 +150,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   clearButton: {
-    marginTop: 10,
+    marginVertical: 12,
     alignSelf: "center",
   },
 });
