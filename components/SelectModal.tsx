@@ -1,8 +1,10 @@
+//SelectModal
+
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 type SelectModalProps<T extends string> = {
   visible: boolean;
-  options?: T[]; // робимо опціональним
+  options?: T[];
   selected: T;
   onSelect: (value: T) => void;
   onClose: () => void;
