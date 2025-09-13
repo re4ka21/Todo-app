@@ -1,11 +1,18 @@
-import { Tabs } from "expo-router";
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-export default function TabsLayout() {
+import HomeScreen from "./homeScreen";
+import Create from "./create";
+import Report from "./report";
+
+const Tab = createBottomTabNavigator();
+
+export default function TabsNavigation() {
   return (
-    <Tabs
+    <Tab.Navigator
       screenOptions={{
-        tabBarShowLabel: false,
         headerShown: false,
+        tabBarShowLabel: false,
         tabBarStyle: {
           borderTopWidth: 0,
           elevation: 0,
@@ -15,30 +22,33 @@ export default function TabsLayout() {
         tabBarActiveTintColor: "green",
       }}
     >
-      <Tabs.Screen
-        name="index"
+      <Tab.Screen
+        name="HomeTab"
+        component={HomeScreen}
         options={{
           tabBarIcon: ({ size, color }) => (
             <Ionicons name="home" size={size} color={color} />
           ),
         }}
       />
-      <Tabs.Screen
-        name="create"
+      <Tab.Screen
+        name="CreateTab"
+        component={Create}
         options={{
           tabBarIcon: ({ size, color }) => (
             <Ionicons name="add-circle" size={size} color={color} />
           ),
         }}
       />
-      <Tabs.Screen
-        name="report"
+      <Tab.Screen
+        name="ReportTab"
+        component={Report}
         options={{
           tabBarIcon: ({ size, color }) => (
             <Ionicons name="alert-circle" size={size} color={color} />
           ),
         }}
       />
-    </Tabs>
+    </Tab.Navigator>
   );
 }

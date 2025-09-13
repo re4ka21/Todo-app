@@ -1,4 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 type TodoCardProps = {
   todo: {
@@ -15,9 +16,9 @@ export default function TodoCard({ todo, onDelete, timeAgo }: TodoCardProps) {
   const getStatusStyle = (status: string) => {
     switch (status) {
       case "open":
-        return { backgroundColor: "#FDE68A", color: "#92400E" };
+        return { backgroundColor: "#FEF3C7", color: "#92400E" };
       case "in progress":
-        return { backgroundColor: "#BFDBFE", color: "#1D4ED8" };
+        return { backgroundColor: "#DBEAFE", color: "#1D4ED8" };
       default:
         return { backgroundColor: "#E5E7EB", color: "#374151" };
     }
@@ -43,9 +44,13 @@ export default function TodoCard({ todo, onDelete, timeAgo }: TodoCardProps) {
       </View>
 
       <Text style={styles.title}>{todo.title}</Text>
+      <Text style={styles.subtitle}>Subtitle</Text>
 
       <View style={styles.footer}>
-        <Text style={styles.date}>{timeAgo(todo.createdAt)}</Text>
+        <View style={styles.timeRow}>
+          <Ionicons name="time-outline" size={14} color="#6B7280" />
+          <Text style={styles.date}>{timeAgo(todo.createdAt)}</Text>
+        </View>
         <TouchableOpacity onPress={onDelete}>
           <Text style={styles.deleteText}>Delete</Text>
         </TouchableOpacity>
@@ -62,38 +67,50 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 2,
+    elevation: 1,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 6,
+    marginBottom: 2,
   },
   id: {
     color: "#047857",
     fontWeight: "600",
+    fontSize: 12,
   },
   status: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     paddingVertical: 2,
     borderRadius: 12,
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: "600",
   },
   title: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "700",
-    marginBottom: 2,
+  },
+  subtitle: {
+    fontSize: 13,
+    color: "#6B7280",
+    marginBottom: 6,
   },
   footer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
+  },
+  timeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
   },
   date: {
-    color: "#6B7280",
-    fontSize: 12,
+    color: "#000000",
+    fontSize: 15,
+    marginLeft: 4,
   },
   deleteText: {
     color: "red",

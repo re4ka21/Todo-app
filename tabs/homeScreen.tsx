@@ -5,13 +5,14 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { useTodos } from "../../context/todoContext";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useTodos } from "../context/TodoContext";
 import { useState } from "react";
-import SearchBar from "../../components/SearchBar";
-import TodoCard from "../../components/TodoCard";
-import CategoryFilter from "../../components/CategoryFilter";
+import SearchBar from "../components/SearchBar";
+import TodoCard from "../components/TodoCard";
+import CategoryFilter from "../components/CategoryFilter";
 
-export default function Index() {
+export default function HomeScreen() {
   const { todos, removeTodo, clearTodo } = useTodos();
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<
@@ -55,11 +56,12 @@ export default function Index() {
     }));
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       <Text style={styles.title}>Tickets</Text>
 
       <SearchBar value={search} onChangeText={setSearch} />
-      <View style={{ paddingVertical: 16 }}>
+
+      <View style={styles.filterWrapper}>
         <CategoryFilter
           options={categories || []}
           selected={categoryFilter}
@@ -77,18 +79,40 @@ export default function Index() {
             timeAgo={timeAgo}
           />
         )}
+        contentContainerStyle={styles.listContent}
       />
 
       <TouchableOpacity onPress={clearTodo} style={styles.clearButton}>
-        <Text style={styles.deleteText}>Delete all todo</Text>
+        <Text style={styles.deleteText}>Delete all tickets</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: "#F3F4F6" },
-  title: { fontSize: 40, fontWeight: "700" },
-  deleteText: { color: "red", fontSize: 14 },
-  clearButton: { marginTop: 10 },
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: "#F3F4F6",
+    marginTop: 46,
+  },
+  title: {
+    fontSize: 40,
+    fontWeight: "700",
+    marginBottom: 12,
+  },
+  filterWrapper: {
+    paddingVertical: 16,
+  },
+  listContent: {
+    paddingBottom: 20,
+  },
+  deleteText: {
+    color: "red",
+    fontSize: 14,
+  },
+  clearButton: {
+    marginTop: 10,
+    alignSelf: "center",
+  },
 });

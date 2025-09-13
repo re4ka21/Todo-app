@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useTodos, Todo } from "../../context/todoContext";
-import TextInputField from "../../components/TextInputField";
-import SelectButton from "../../components/SelectButton";
-import SelectModal from "../../components/SelectModal";
+import { useTodos, Todo } from "../context/TodoContext";
+import TextInputField from "../components/TextInputField";
+import SelectButton from "../components/SelectButton";
+import SelectModal from "../components/SelectModal";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const categories = [
   "My tickets",
@@ -37,12 +38,11 @@ export default function Create() {
       status,
       createdAt: new Date(),
     });
-
     setText("");
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Create Todo</Text>
 
       <TextInputField
@@ -81,13 +81,17 @@ export default function Create() {
       <TouchableOpacity onPress={handleAdd} style={styles.addButton}>
         <Text style={styles.addButtonText}>Add Task</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { padding: 16 },
-  title: { fontSize: 20, fontWeight: "700", marginBottom: 12 },
+  title: {
+    fontSize: 20,
+    fontWeight: "700",
+    marginBottom: 12,
+  },
   addButton: {
     backgroundColor: "#047857",
     padding: 12,

@@ -1,12 +1,13 @@
 import React from "react";
 import { FlatList, TouchableOpacity, Text, StyleSheet } from "react-native";
+
 type Props<T extends string> = {
   options?: readonly T[];
   selected: T;
   onSelect: (value: T) => void;
 };
 
-export default function CategoryFilterFlatList<T extends string>({
+export default function CategoryFilter<T extends string>({
   options,
   selected,
   onSelect,
@@ -32,10 +33,11 @@ export default function CategoryFilterFlatList<T extends string>({
     />
   );
 }
+
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 17,
     borderRadius: 20,
     marginRight: 8,
     backgroundColor: "#E5E7EB",
@@ -46,6 +48,7 @@ const styles = StyleSheet.create({
   text: {
     color: "#374151",
     fontWeight: "500",
+    fontSize: 18,
   },
   textActive: {
     color: "white",
