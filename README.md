@@ -48,3 +48,5 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+- https://github.com/re4ka21/Todo-app/blob/f2ff8b6b5bdb79810a779bd1841d31d26c9b4c87/expoproject%20%E2%80%93%20settings.gradle%20(expoproject)%202025-09-13%2015-06-34.mp4
