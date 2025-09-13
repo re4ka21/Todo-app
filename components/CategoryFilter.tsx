@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 17,
     borderRadius: 20,
     marginRight: 8,
-    backgroundColor: "#E5E7EB",
+    backgroundColor: "#D5ECE8",
   },
   buttonActive: {
     backgroundColor: "#047857",
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   text: {
     color: "#374151",
     fontWeight: "500",
-    fontSize: 18,
+    fontSize: 17,
   },
   textActive: {
     color: "white",

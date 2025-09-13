@@ -57,18 +57,11 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
+      {/* Фіксований пошук зверху */}
       <Text style={styles.title}>Tickets</Text>
-
       <SearchBar value={search} onChangeText={setSearch} />
 
-      <View style={styles.filterWrapper}>
-        <CategoryFilter
-          options={categories || []}
-          selected={categoryFilter}
-          onSelect={setCategoryFilter}
-        />
-      </View>
-
+      {/* FlatList зі скролом */}
       <FlatList
         data={todosData}
         keyExtractor={(item) => item.id}
@@ -80,6 +73,16 @@ export default function HomeScreen() {
           />
         )}
         contentContainerStyle={styles.listContent}
+        // Категорії скроляться разом зі списком
+        ListHeaderComponent={
+          <View style={styles.filterWrapper}>
+            <CategoryFilter
+              options={categories}
+              selected={categoryFilter}
+              onSelect={setCategoryFilter}
+            />
+          </View>
+        }
       />
 
       <TouchableOpacity onPress={clearTodo} style={styles.clearButton}>
@@ -97,7 +100,7 @@ const styles = StyleSheet.create({
     marginTop: 46,
   },
   title: {
-    fontSize: 40,
+    fontSize: 34,
     fontWeight: "700",
     marginBottom: 12,
   },

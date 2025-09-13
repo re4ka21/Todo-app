@@ -2,8 +2,8 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "./homeScreen";
-import Create from "./create";
-import Report from "./report";
+import Create from "./CreateScreen";
+import Report from "./ReportScreen";
 
 const Tab = createBottomTabNavigator();
 

@@ -79,13 +79,13 @@ const styles = StyleSheet.create({
   id: {
     color: "#047857",
     fontWeight: "600",
-    fontSize: 12,
+    fontSize: 11,
   },
   status: {
     paddingHorizontal: 10,
     paddingVertical: 2,
     borderRadius: 12,
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "600",
   },
   title: {
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: 14,
     color: "#6B7280",
     marginBottom: 6,
   },
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
   date: {
     color: "#000000",
-    fontSize: 15,
+    fontSize: 14,
     marginLeft: 4,
   },
   deleteText: {
