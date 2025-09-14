@@ -37,8 +37,8 @@ export default function HomeScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const topSpacerHeight = scrollY.interpolate({
-    inputRange: [0, 100], // скрол 0–100 px
-    outputRange: [5, 50], // висота spacer від 5 до 50
+    inputRange: [0, 100],
+    outputRange: [5, 65],
     extrapolate: "clamp",
   });
 
@@ -136,7 +136,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 34,
     fontWeight: "700",
-    marginVertical: 16,
+    marginVertical: 9,
+    marginTop: 46,
   },
   stickyWrapper: {
     backgroundColor: "#F3F4F6",

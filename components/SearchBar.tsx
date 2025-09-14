@@ -1,12 +1,12 @@
 import { View, TextInput, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-type SearchBarProps = {
+type Props = {
   value: string;
   onChangeText: (text: string) => void;
 };
 
-export default function SearchBar({ value, onChangeText }: SearchBarProps) {
+export default function SearchBar({ value, onChangeText }: Props) {
   return (
     <View style={styles.searchContainer}>
       <Ionicons name="search" size={18} color="#6B7280" style={styles.icon} />
