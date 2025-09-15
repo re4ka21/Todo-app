@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useTodos, Todo } from "../context/TodoContext";
+import { useTodoStore, Todo } from "../context/TodoContext"; // змінили на Zustand
 import TextInputField from "../components/TextInputField";
 import SelectButton from "../components/SelectButton";
 import SelectModal from "../components/SelectModal";
@@ -19,7 +19,7 @@ const categories = [
 const statuses = ["open", "in progress"] as const;
 
 export default function Create() {
-  const { addTodo } = useTodos();
+  const addTodo = useTodoStore((state) => state.addTodo);
 
   const [text, setText] = useState("");
   const [category, setCategory] =
@@ -37,7 +37,8 @@ export default function Create() {
       category,
       status,
       createdAt: new Date(),
-    });
+    } as Todo);
+
     setText("");
   };
 
@@ -87,11 +88,7 @@ export default function Create() {
 
 const styles = StyleSheet.create({
   container: { padding: 16 },
-  title: {
-    fontSize: 20,
-    fontWeight: "700",
-    marginBottom: 12,
-  },
+  title: { fontSize: 20, fontWeight: "700", marginBottom: 12 },
   addButton: {
     backgroundColor: "#047857",
     padding: 12,

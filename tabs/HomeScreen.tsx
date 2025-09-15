@@ -8,13 +8,16 @@ import {
   Animated,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useTodos } from "../context/TodoContext";
+import { useTodoStore } from "../context/TodoContext";
 import SearchBar from "../components/SearchBar";
 import TodoCard from "../components/TodoCard";
 import CategoryFilter from "../components/CategoryFilter";
 
 export default function HomeScreen() {
-  const { todos, removeTodo, clearTodo } = useTodos();
+  const todos = useTodoStore((state) => state.todos);
+  const removeTodo = useTodoStore((state) => state.removeTodo);
+  const clearTodo = useTodoStore((state) => state.clearTodo);
+
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<
     | "All tickets"
@@ -84,18 +87,16 @@ export default function HomeScreen() {
           { useNativeDriver: false }
         )}
         renderItem={({ item }) => {
-          if (item.type === "title") {
+          if (item.type === "title")
             return <Text style={styles.title}>Tickets</Text>;
-          }
-          if (item.type === "sticky") {
+          if (item.type === "sticky")
             return (
               <View style={styles.stickyWrapper}>
                 <Animated.View style={{ height: topSpacerHeight }} />
                 <SearchBar value={search} onChangeText={setSearch} />
               </View>
             );
-          }
-          if (item.type === "category") {
+          if (item.type === "category")
             return (
               <CategoryFilter
                 options={categories}
@@ -103,7 +104,6 @@ export default function HomeScreen() {
                 onSelect={setCategoryFilter}
               />
             );
-          }
           return (
             <TodoCard
               todo={item.content}
@@ -128,30 +128,10 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F3F4F6",
-    paddingHorizontal: 16,
-  },
-  title: {
-    fontSize: 34,
-    fontWeight: "700",
-    marginVertical: 9,
-    marginTop: 46,
-  },
-  stickyWrapper: {
-    backgroundColor: "#F3F4F6",
-    zIndex: 10,
-  },
-  listContent: {
-    paddingBottom: 20,
-  },
-  deleteText: {
-    color: "red",
-    fontSize: 14,
-  },
-  clearButton: {
-    marginVertical: 12,
-    alignSelf: "center",
-  },
+  container: { flex: 1, backgroundColor: "#F3F4F6", paddingHorizontal: 16 },
+  title: { fontSize: 34, fontWeight: "700", marginVertical: 9, marginTop: 46 },
+  stickyWrapper: { backgroundColor: "#F3F4F6", zIndex: 10 },
+  listContent: { paddingBottom: 20 },
+  deleteText: { color: "red", fontSize: 14 },
+  clearButton: { marginVertical: 12, alignSelf: "center" },
 });
