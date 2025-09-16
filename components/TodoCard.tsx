@@ -1,3 +1,4 @@
+import React, { memo, useMemo, useCallback } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -5,16 +6,14 @@ type Props = {
   todo: {
     id: string;
     title: string;
-    status: string;
+    status: "open" | "in progress";
     createdAt: Date;
   };
   onDelete: () => void;
-  timeAgo: (date: string | Date) => string;
 };
-
-export default function TodoCard({ todo, onDelete, timeAgo }: Props) {
-  const getStatusStyle = (status: string) => {
-    switch (status) {
+function TodoCard({ todo, onDelete }: Props) {
+  const statusStyle = useMemo(() => {
+    switch (todo.status) {
       case "open":
         return { backgroundColor: "#FEF3C7", color: "#92400E" };
       case "in progress":
@@ -22,10 +21,16 @@ export default function TodoCard({ todo, onDelete, timeAgo }: Props) {
       default:
         return { backgroundColor: "#E5E7EB", color: "#374151" };
     }
-  };
-
-  const statusStyle = getStatusStyle(todo.status);
-
+  }, [todo.status]);
+  const timeAgo = useCallback((date: string | Date) => {
+    const now = new Date();
+    const past = new Date(date);
+    const diff = Math.floor((now.getTime() - past.getTime()) / 1000);
+    if (diff < 60) return `${diff} sec ago`;
+    if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+    return `${Math.floor(diff / 86400)} days ago`;
+  }, []);
   return (
     <View style={styles.card}>
       <View style={styles.header}>
@@ -58,6 +63,8 @@ export default function TodoCard({ todo, onDelete, timeAgo }: Props) {
     </View>
   );
 }
+
+export default memo(TodoCard);
 
 const styles = StyleSheet.create({
   card: {

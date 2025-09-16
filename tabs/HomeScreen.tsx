@@ -1,10 +1,4 @@
-import React, {
-  useRef,
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-} from "react";
+import React, { useRef, useState, useMemo } from "react";
 import {
   View,
   Text,
@@ -18,36 +12,26 @@ import SearchBar from "../components/SearchBar";
 import TodoCard from "../components/TodoCard";
 import CategoryFilter from "../components/CategoryFilter";
 
+enum Category {
+  AllTickets = "All tickets",
+  MyTickets = "My tickets",
+  Unassigned = "Unassigned",
+  Bug = "Bug",
+  Feature = "Feature",
+  Improvement = "Improvement",
+}
+
 export default function HomeScreen() {
   const todos = useTodoStore((state) => state.todos);
   const removeTodo = useTodoStore((state) => state.removeTodo);
   const clearTodo = useTodoStore((state) => state.clearTodo);
-  const [tick, setTick] = useState(0);
+
   const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<
-    | "All tickets"
-    | "My tickets"
-    | "Unassigned"
-    | "Bug"
-    | "Feature"
-    | "Improvement"
-  >("All tickets");
+  const [categoryFilter, setCategoryFilter] = useState<Category>(
+    Category.AllTickets
+  );
 
-  const categories = [
-    "All tickets",
-    "My tickets",
-    "Unassigned",
-    "Bug",
-    "Feature",
-    "Improvement",
-  ] as const;
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTick((t) => t + 1);
-    }, 30_000);
-
-    return () => clearInterval(interval);
-  }, []);
+  const categories = Object.values(Category);
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const topSpacerHeight = scrollY.interpolate({
@@ -55,81 +39,87 @@ export default function HomeScreen() {
     outputRange: [5, 65],
     extrapolate: "clamp",
   });
-  const timeAgo = useCallback((date: string | Date) => {
-    const now = new Date();
-    const past = new Date(date);
-    const diff = Math.floor((now.getTime() - past.getTime()) / 1000);
-    if (diff < 60) return `${diff} sec ago`;
-    if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
-    return `${Math.floor(diff / 86400)} days ago`;
-  }, []);
 
+  // Фільтруємо туду
   const filteredTodos = useMemo(() => {
     return todos
       .filter(
         (t) =>
           t.title.toLowerCase().includes(search.toLowerCase()) &&
-          (categoryFilter === "All tickets" || t.category === categoryFilter)
+          (categoryFilter === Category.AllTickets ||
+            t.category === categoryFilter)
       )
       .map((t, i) => ({
-        id: `REQ-${(i + 1).toString().padStart(3, "0")}`,
+        id: `REQ-${String(i + 1).padStart(3, "0")}`,
         ...t,
       }));
   }, [todos, search, categoryFilter]);
 
-  const flatListData: Array<{ type: string; key: string; content?: any }> = [
-    { type: "title", key: "title" },
-    { type: "sticky", key: "search" },
-    { type: "category", key: "category" },
-    ...filteredTodos.map((todo) => ({
-      type: "todo",
-      key: todo.id,
-      content: todo,
-    })),
-  ];
+  // Дані для FlatList
+  const flatListData = useMemo(() => {
+    return [
+      { type: "title", key: "title" },
+      { type: "sticky", key: "search" },
+      { type: "category", key: "category" },
+      ...filteredTodos.map((todo) => ({
+        type: "todo",
+        key: todo.id,
+        content: todo,
+      })),
+    ];
+  }, [filteredTodos]);
+
+  const renderItem = ({ item }: { item: any }) => {
+    switch (item.type) {
+      case "title":
+        return <Text style={styles.title}>Tickets</Text>;
+
+      case "sticky":
+        return (
+          <View style={styles.stickyWrapper}>
+            <Animated.View style={{ height: topSpacerHeight }} />
+            <SearchBar value={search} onChangeText={setSearch} />
+          </View>
+        );
+
+      case "category":
+        return (
+          <CategoryFilter
+            options={categories}
+            selected={categoryFilter}
+            onSelect={setCategoryFilter}
+          />
+        );
+
+      case "todo":
+        return (
+          <TodoCard
+            todo={item.content}
+            onDelete={() =>
+              removeTodo(
+                filteredTodos.findIndex((t) => t.id === item.content.id)
+              )
+            }
+          />
+        );
+
+      default:
+        return null;
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <Animated.FlatList
         data={flatListData}
         keyExtractor={(item) => item.key}
+        renderItem={renderItem}
+        stickyHeaderIndices={[1]}
+        contentContainerStyle={styles.listContent}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: false }
         )}
-        renderItem={({ item }) => {
-          if (item.type === "title")
-            return <Text style={styles.title}>Tickets</Text>;
-          if (item.type === "sticky")
-            return (
-              <View style={styles.stickyWrapper}>
-                <Animated.View style={{ height: topSpacerHeight }} />
-                <SearchBar value={search} onChangeText={setSearch} />
-              </View>
-            );
-          if (item.type === "category")
-            return (
-              <CategoryFilter
-                options={categories}
-                selected={categoryFilter}
-                onSelect={setCategoryFilter}
-              />
-            );
-          return (
-            <TodoCard
-              todo={item.content}
-              onDelete={() =>
-                removeTodo(
-                  filteredTodos.findIndex((t) => t.id === item.content.id)
-                )
-              }
-              timeAgo={timeAgo}
-            />
-          );
-        }}
-        stickyHeaderIndices={[1]}
-        contentContainerStyle={styles.listContent}
       />
 
       <TouchableOpacity onPress={clearTodo} style={styles.clearButton}>
@@ -140,10 +130,30 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F3F4F6", paddingHorizontal: 16 },
-  title: { fontSize: 34, fontWeight: "700", marginVertical: 9, marginTop: 46 },
-  stickyWrapper: { backgroundColor: "#F3F4F6", zIndex: 10 },
-  listContent: { paddingBottom: 20 },
-  deleteText: { color: "red", fontSize: 14 },
-  clearButton: { marginVertical: 12, alignSelf: "center" },
+  container: {
+    flex: 1,
+    backgroundColor: "#F3F4F6",
+    paddingHorizontal: 16,
+  },
+  title: {
+    fontSize: 34,
+    fontWeight: "700",
+    marginVertical: 9,
+    marginTop: 46,
+  },
+  stickyWrapper: {
+    backgroundColor: "#F3F4F6",
+    zIndex: 10,
+  },
+  listContent: {
+    paddingBottom: 20,
+  },
+  clearButton: {
+    marginVertical: 12,
+    alignSelf: "center",
+  },
+  deleteText: {
+    color: "red",
+    fontSize: 14,
+  },
 });
