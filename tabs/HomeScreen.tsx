@@ -48,14 +48,12 @@ export default function HomeScreen() {
       }));
   }, [todos, search, categoryFilter]);
 
-  // Висота простору над SearchBar при скролі
   const topSpacerHeight = scrollY.interpolate({
     inputRange: [0, 100],
-    outputRange: [0, 40], // від 0 до 40px при скролі
+    outputRange: [0, 40],
     extrapolate: "clamp",
   });
 
-  // Масив JSX-компонентів для FlatList
   const listComponents = useMemo(() => {
     return [
       <Text key="title" style={styles.title}>
@@ -63,12 +61,10 @@ export default function HomeScreen() {
       </Text>,
 
       <Animated.View key="search">
-        {/* Білий простір над SearchBar */}
         <Animated.View
           style={{ height: topSpacerHeight, backgroundColor: "#F3F4F6" }}
         />
 
-        {/* Сам SearchBar */}
         <View
           style={{
             backgroundColor: "#F3F4F6",
@@ -105,7 +101,7 @@ export default function HomeScreen() {
         data={listComponents}
         renderItem={({ item }) => item}
         keyExtractor={(_, index) => index.toString()}
-        stickyHeaderIndices={[1]} // тільки SearchBar sticky
+        stickyHeaderIndices={[1]}
         contentContainerStyle={styles.listContent}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
