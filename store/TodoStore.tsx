@@ -1,4 +1,4 @@
-import { create } from "zustand"; // <- імпорт через {} для TypeScript
+import { create } from "zustand";
 
 export type Todo = {
   title: string;

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useTodoStore, Todo } from "../context/TodoContext"; // змінили на Zustand
+import { useTodoStore, Todo } from "../store/TodoStore";
 import TextInputField from "../components/TextInputField";
 import SelectButton from "../components/SelectButton";
 import SelectModal from "../components/SelectModal";

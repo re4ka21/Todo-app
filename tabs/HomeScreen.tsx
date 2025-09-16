@@ -1,14 +1,19 @@
-import React, { useRef, useState } from "react";
+import React, {
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+} from "react";
 import {
   View,
   Text,
-  FlatList,
   TouchableOpacity,
   StyleSheet,
   Animated,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useTodoStore } from "../context/TodoContext";
+import { useTodoStore } from "../store/TodoStore";
 import SearchBar from "../components/SearchBar";
 import TodoCard from "../components/TodoCard";
 import CategoryFilter from "../components/CategoryFilter";
@@ -17,7 +22,7 @@ export default function HomeScreen() {
   const todos = useTodoStore((state) => state.todos);
   const removeTodo = useTodoStore((state) => state.removeTodo);
   const clearTodo = useTodoStore((state) => state.clearTodo);
-
+  const [tick, setTick] = useState(0);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<
     | "All tickets"
@@ -36,7 +41,13 @@ export default function HomeScreen() {
     "Feature",
     "Improvement",
   ] as const;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTick((t) => t + 1);
+    }, 30_000);
 
+    return () => clearInterval(interval);
+  }, []);
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const topSpacerHeight = scrollY.interpolate({
@@ -44,8 +55,7 @@ export default function HomeScreen() {
     outputRange: [5, 65],
     extrapolate: "clamp",
   });
-
-  const timeAgo = (date: string | Date) => {
+  const timeAgo = useCallback((date: string | Date) => {
     const now = new Date();
     const past = new Date(date);
     const diff = Math.floor((now.getTime() - past.getTime()) / 1000);
@@ -53,18 +63,20 @@ export default function HomeScreen() {
     if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
     if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
     return `${Math.floor(diff / 86400)} days ago`;
-  };
+  }, []);
 
-  const filteredTodos = todos
-    .filter(
-      (t) =>
-        t.title.toLowerCase().includes(search.toLowerCase()) &&
-        (categoryFilter === "All tickets" || t.category === categoryFilter)
-    )
-    .map((t, i) => ({
-      id: `REQ-${(i + 1).toString().padStart(3, "0")}`,
-      ...t,
-    }));
+  const filteredTodos = useMemo(() => {
+    return todos
+      .filter(
+        (t) =>
+          t.title.toLowerCase().includes(search.toLowerCase()) &&
+          (categoryFilter === "All tickets" || t.category === categoryFilter)
+      )
+      .map((t, i) => ({
+        id: `REQ-${(i + 1).toString().padStart(3, "0")}`,
+        ...t,
+      }));
+  }, [todos, search, categoryFilter]);
 
   const flatListData: Array<{ type: string; key: string; content?: any }> = [
     { type: "title", key: "title" },
