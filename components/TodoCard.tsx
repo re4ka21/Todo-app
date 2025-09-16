@@ -77,6 +77,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 1,
+    width: "95%",
+    alignSelf: "center",
   },
   header: {
     flexDirection: "row",

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -30,17 +30,10 @@ export default function HomeScreen() {
   const [categoryFilter, setCategoryFilter] = useState<Category>(
     Category.AllTickets
   );
-
   const categories = Object.values(Category);
+
   const scrollY = useRef(new Animated.Value(0)).current;
 
-  const topSpacerHeight = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [5, 65],
-    extrapolate: "clamp",
-  });
-
-  // Фільтруємо туду
   const filteredTodos = useMemo(() => {
     return todos
       .filter(
@@ -55,66 +48,64 @@ export default function HomeScreen() {
       }));
   }, [todos, search, categoryFilter]);
 
-  // Дані для FlatList
-  const flatListData = useMemo(() => {
+  // Висота простору над SearchBar при скролі
+  const topSpacerHeight = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, 40], // від 0 до 40px при скролі
+    extrapolate: "clamp",
+  });
+
+  // Масив JSX-компонентів для FlatList
+  const listComponents = useMemo(() => {
     return [
-      { type: "title", key: "title" },
-      { type: "sticky", key: "search" },
-      { type: "category", key: "category" },
-      ...filteredTodos.map((todo) => ({
-        type: "todo",
-        key: todo.id,
-        content: todo,
-      })),
+      <Text key="title" style={styles.title}>
+        Tickets
+      </Text>,
+
+      <Animated.View key="search">
+        {/* Білий простір над SearchBar */}
+        <Animated.View
+          style={{ height: topSpacerHeight, backgroundColor: "#F3F4F6" }}
+        />
+
+        {/* Сам SearchBar */}
+        <View
+          style={{
+            backgroundColor: "#F3F4F6",
+            paddingHorizontal: 16,
+            paddingBottom: 10,
+          }}
+        >
+          <SearchBar value={search} onChangeText={setSearch} />
+        </View>
+      </Animated.View>,
+
+      <CategoryFilter
+        key="category"
+        options={categories}
+        selected={categoryFilter}
+        onSelect={setCategoryFilter}
+      />,
+
+      ...filteredTodos.map((t) => (
+        <TodoCard
+          key={t.id}
+          todo={t}
+          onDelete={() =>
+            removeTodo(filteredTodos.findIndex((ft) => ft.id === t.id))
+          }
+        />
+      )),
     ];
-  }, [filteredTodos]);
-
-  const renderItem = ({ item }: { item: any }) => {
-    switch (item.type) {
-      case "title":
-        return <Text style={styles.title}>Tickets</Text>;
-
-      case "sticky":
-        return (
-          <View style={styles.stickyWrapper}>
-            <Animated.View style={{ height: topSpacerHeight }} />
-            <SearchBar value={search} onChangeText={setSearch} />
-          </View>
-        );
-
-      case "category":
-        return (
-          <CategoryFilter
-            options={categories}
-            selected={categoryFilter}
-            onSelect={setCategoryFilter}
-          />
-        );
-
-      case "todo":
-        return (
-          <TodoCard
-            todo={item.content}
-            onDelete={() =>
-              removeTodo(
-                filteredTodos.findIndex((t) => t.id === item.content.id)
-              )
-            }
-          />
-        );
-
-      default:
-        return null;
-    }
-  };
+  }, [filteredTodos, search, categoryFilter, topSpacerHeight]);
 
   return (
     <SafeAreaView style={styles.container}>
       <Animated.FlatList
-        data={flatListData}
-        keyExtractor={(item) => item.key}
-        renderItem={renderItem}
-        stickyHeaderIndices={[1]}
+        data={listComponents}
+        renderItem={({ item }) => item}
+        keyExtractor={(_, index) => index.toString()}
+        stickyHeaderIndices={[1]} // тільки SearchBar sticky
         contentContainerStyle={styles.listContent}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
@@ -133,17 +124,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F3F4F6",
-    paddingHorizontal: 16,
   },
   title: {
     fontSize: 34,
     fontWeight: "700",
-    marginVertical: 9,
-    marginTop: 46,
-  },
-  stickyWrapper: {
-    backgroundColor: "#F3F4F6",
-    zIndex: 10,
+    marginTop: 34,
+    marginBottom: 8,
+    paddingHorizontal: 16,
   },
   listContent: {
     paddingBottom: 20,

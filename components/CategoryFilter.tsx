@@ -16,6 +16,7 @@ export default function CategoryFilter<T extends string>({
 
   return (
     <FlatList
+      style={styles.container}
       horizontal
       showsHorizontalScrollIndicator={false}
       data={options}
@@ -35,6 +36,9 @@ export default function CategoryFilter<T extends string>({
 }
 
 const styles = StyleSheet.create({
+  container: {
+    marginLeft: 10,
+  },
   button: {
     paddingVertical: 10,
     paddingHorizontal: 17,
