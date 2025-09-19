@@ -1,16 +1,17 @@
-import React, { useMemo, useState, useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import {
-  View,
   Text,
-  TouchableOpacity,
+  View,
   StyleSheet,
   Animated,
+  TouchableOpacity,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useTodoStore } from "../store/TodoStore";
 import SearchBar from "../components/SearchBar";
 import TodoCard from "../components/TodoCard";
 import CategoryFilter from "../components/CategoryFilter";
+import CustomFlatList from "../components/CustomFlatList";
+import { useCustomFlatListHook } from "../hooks/useRestaurantListHook";
 
 enum Category {
   AllTickets = "All tickets",
@@ -22,17 +23,16 @@ enum Category {
 }
 
 export default function HomeScreen() {
+  const scrollY = useRef(new Animated.Value(0)).current;
   const todos = useTodoStore((state) => state.todos);
   const removeTodo = useTodoStore((state) => state.removeTodo);
   const clearTodo = useTodoStore((state) => state.clearTodo);
+  const search = useTodoStore((state) => state.search);
+  const setSearch = useTodoStore((state) => state.setSearch);
+  const categoryFilter = useTodoStore((state) => state.categoryFilter);
+  const setCategoryFilter = useTodoStore((state) => state.setCategoryFilter);
 
-  const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<Category>(
-    Category.AllTickets
-  );
   const categories = Object.values(Category);
-
-  const scrollY = useRef(new Animated.Value(0)).current;
 
   const filteredTodos = useMemo(() => {
     return todos
@@ -42,77 +42,67 @@ export default function HomeScreen() {
           (categoryFilter === Category.AllTickets ||
             t.category === categoryFilter)
       )
-      .map((t, i) => ({
-        id: `REQ-${String(i + 1).padStart(3, "0")}`,
-        ...t,
-      }));
+      .map((t, i) => ({ id: `REQ-${String(i + 1).padStart(3, "0")}`, ...t }));
   }, [todos, search, categoryFilter]);
 
   const topSpacerHeight = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [0, 40],
+    inputRange: [0, 40],
+    outputRange: [170, 100],
     extrapolate: "clamp",
   });
-
-  const listComponents = useMemo(() => {
-    return [
-      <Text key="title" style={styles.title}>
-        Tickets
-      </Text>,
-
-      <Animated.View key="search">
-        <Animated.View
-          style={{ height: topSpacerHeight, backgroundColor: "#F3F4F6" }}
-        />
-
-        <View
-          style={{
-            backgroundColor: "#F3F4F6",
-            paddingHorizontal: 16,
-            paddingBottom: 10,
-          }}
-        >
-          <SearchBar value={search} onChangeText={setSearch} />
-        </View>
-      </Animated.View>,
-
-      <CategoryFilter
-        key="category"
-        options={categories}
-        selected={categoryFilter}
-        onSelect={setCategoryFilter}
-      />,
-
-      ...filteredTodos.map((t) => (
-        <TodoCard
-          key={t.id}
-          todo={t}
-          onDelete={() =>
-            removeTodo(filteredTodos.findIndex((ft) => ft.id === t.id))
-          }
-        />
-      )),
-    ];
-  }, [filteredTodos, search, categoryFilter, topSpacerHeight]);
-
+  const bgColor = scrollY.interpolate({
+    inputRange: [0, 50], // від 0px до 50px скролу
+    outputRange: ["transparent", "white"], // плавний перехід
+    extrapolate: "clamp",
+  });
   return (
-    <SafeAreaView style={styles.container}>
-      <Animated.FlatList
-        data={listComponents}
-        renderItem={({ item }) => item}
-        keyExtractor={(_, index) => index.toString()}
-        stickyHeaderIndices={[1]}
-        contentContainerStyle={styles.listContent}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: false }
+    <View style={styles.container}>
+      <CustomFlatList
+        data={filteredTodos}
+        scrollY={scrollY}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TodoCard
+            key={item.id}
+            todo={item}
+            onDelete={() =>
+              removeTodo(filteredTodos.findIndex((ft) => ft.id === item.id))
+            }
+          />
         )}
-      />
+        HeaderComponent={<Text style={styles.title}>Tickets</Text>}
+        StickyElementComponent={
+          <Animated.View
+            style={{
+              backgroundColor: bgColor, // <-- тут зʼявляється білий фон
+            }}
+          >
+            <Animated.View style={{ height: topSpacerHeight }} />
 
+            <Animated.View
+              style={{
+                paddingHorizontal: 16,
+                paddingBottom: 10,
+              }}
+            >
+              <SearchBar value={search} onChangeText={setSearch} />
+            </Animated.View>
+          </Animated.View>
+        }
+        TopListElementComponent={
+          <View>
+            <CategoryFilter
+              options={categories}
+              selected={categoryFilter}
+              onSelect={setCategoryFilter}
+            />
+          </View>
+        }
+      />
       <TouchableOpacity onPress={clearTodo} style={styles.clearButton}>
         <Text style={styles.deleteText}>Delete all tickets</Text>
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -124,16 +114,19 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 34,
     fontWeight: "700",
-    marginTop: 34,
+    marginTop: 110,
     marginBottom: 8,
     paddingHorizontal: 16,
-  },
-  listContent: {
-    paddingBottom: 20,
+    zIndex: 12,
   },
   clearButton: {
-    marginVertical: 12,
-    alignSelf: "center",
+    position: "absolute",
+    bottom: 0, // відстань від низу екрану
+    left: 16,
+    right: 16,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
   },
   deleteText: {
     color: "red",

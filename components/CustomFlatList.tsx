@@ -1,41 +1,69 @@
-import React from "react";
-import {
-  Animated,
-  FlatList,
-  FlatListProps,
-  View,
-  StyleSheet,
-} from "react-native";
+import React, { useRef } from "react";
+import { Animated, FlatListProps, View, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { JSX } from "react";
-type Item = any;
 
-type Props = FlatListProps<Item> & {
-  stickyHeader?: () => JSX.Element; // функція замість ReactNode
+type CustomFlatListProps<T> = Omit<FlatListProps<T>, "ListHeaderComponent"> & {
+  HeaderComponent: JSX.Element; // заголовок, скролиться
+  StickyElementComponent: JSX.Element; // липкий SearchBar
+  TopListElementComponent: JSX.Element; // категорії, скроляться
+  scrollY?: Animated.Value;
+  stickyHeight?: number; // висота SearchBar
 };
 
-export default function CustomFlatList({ stickyHeader, ...props }: Props) {
-  const scrollY = React.useRef(new Animated.Value(0)).current;
-
-  const onScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-    { useNativeDriver: false }
-  );
+function CustomFlatList<T>({
+  style,
+  scrollY,
+  stickyHeight = 60,
+  ...props
+}: CustomFlatListProps<T>) {
+  const listRef = useRef<Animated.FlatList<T> | null>(null);
+  const internalScrollY = scrollY || useRef(new Animated.Value(0)).current;
 
   return (
-    <View style={styles.container}>
-      <Animated.FlatList
+    <SafeAreaView edges={["bottom"]} style={[styles.container, style]}>
+      {/* FlatList з усіма елементами */}
+      <Animated.FlatList<any>
+        ref={listRef}
         {...props}
-        contentContainerStyle={props.contentContainerStyle}
-        stickyHeaderIndices={stickyHeader ? [0] : []} // sticky тільки перший елемент
-        ListHeaderComponent={stickyHeader ? stickyHeader : undefined} // функція повертає JSX
-        onScroll={onScroll}
+        ListHeaderComponent={
+          <View>
+            {/* Заголовок */}
+            {props.HeaderComponent}
+
+            {/* padding для липкого SearchBar */}
+            <View style={{ height: stickyHeight }} />
+
+            {/* Категорії */}
+            {props.TopListElementComponent}
+          </View>
+        }
+        contentContainerStyle={{ paddingBottom: 20 }}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: internalScrollY } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={16}
       />
-    </View>
+
+      {/* Липкий SearchBar поверх FlatList */}
+      <View style={[styles.sticky, { height: stickyHeight }]}>
+        {props.StickyElementComponent}
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  container: { flex: 1 },
+  sticky: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    backgroundColor: "#F3F4F6", // можна змінити на свій
   },
 });
+
+export default CustomFlatList;

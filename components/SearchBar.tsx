@@ -4,9 +4,10 @@ import { Ionicons } from "@expo/vector-icons";
 type Props = {
   value: string;
   onChangeText: (text: string) => void;
+  height?: any;
 };
 
-export default function SearchBar({ value, onChangeText }: Props) {
+export default function SearchBar({ value, onChangeText, height }: Props) {
   return (
     <View style={styles.searchContainer}>
       <Ionicons name="search" size={18} color="#6B7280" style={styles.icon} />
@@ -28,7 +29,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 8,
     backgroundColor: "#7676801F",
-    height: 36,
+
+    width: 380,
   },
   icon: {
     marginRight: 6,
