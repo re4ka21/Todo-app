@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useCallback } from "react";
 import {
   Text,
   View,
@@ -44,7 +44,12 @@ export default function HomeScreen() {
       )
       .map((t, i) => ({ id: `REQ-${String(i + 1).padStart(3, "0")}`, ...t }));
   }, [todos, search, categoryFilter]);
-
+  const handleDelete = useCallback(
+    (id: string) => {
+      removeTodo(filteredTodos.findIndex((ft) => ft.id === id));
+    },
+    [filteredTodos, removeTodo]
+  );
   const topSpacerHeight = scrollY.interpolate({
     inputRange: [0, 40],
     outputRange: [170, 100],
@@ -65,9 +70,7 @@ export default function HomeScreen() {
           <TodoCard
             key={item.id}
             todo={item}
-            onDelete={() =>
-              removeTodo(filteredTodos.findIndex((ft) => ft.id === item.id))
-            }
+            onDelete={() => handleDelete(item.id)}
           />
         )}
         HeaderComponent={<Text style={styles.title}>Tickets</Text>}

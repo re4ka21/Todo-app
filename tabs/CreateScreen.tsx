@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useTodoStore, Todo } from "../store/TodoStore";
 import TextInputField from "../components/TextInputField";
@@ -29,7 +29,7 @@ export default function Create() {
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);
   const [statusModalVisible, setStatusModalVisible] = useState(false);
 
-  const handleAdd = () => {
+  const handleAdd = useCallback(() => {
     if (!text.trim()) return;
 
     addTodo({
@@ -40,7 +40,7 @@ export default function Create() {
     } as Todo);
 
     setText("");
-  };
+  }, [text, category, status, addTodo]);
 
   return (
     <SafeAreaView style={styles.container}>
