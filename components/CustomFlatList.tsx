@@ -4,11 +4,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { JSX } from "react";
 
 type CustomFlatListProps<T> = Omit<FlatListProps<T>, "ListHeaderComponent"> & {
-  HeaderComponent: JSX.Element; // заголовок, скролиться
-  StickyElementComponent: JSX.Element; // липкий SearchBar
-  TopListElementComponent: JSX.Element; // категорії, скроляться
+  HeaderComponent: JSX.Element;
+  StickyElementComponent: JSX.Element;
+  TopListElementComponent: JSX.Element;
   scrollY?: Animated.Value;
-  stickyHeight?: number; // висота SearchBar
+  stickyHeight?: number;
 };
 
 function CustomFlatList<T>({
@@ -22,19 +22,15 @@ function CustomFlatList<T>({
 
   return (
     <SafeAreaView edges={["bottom"]} style={[styles.container, style]}>
-      {/* FlatList з усіма елементами */}
       <Animated.FlatList<any>
         ref={listRef}
         {...props}
         ListHeaderComponent={
           <View>
-            {/* Заголовок */}
             {props.HeaderComponent}
 
-            {/* padding для липкого SearchBar */}
             <View style={{ height: stickyHeight }} />
 
-            {/* Категорії */}
             {props.TopListElementComponent}
           </View>
         }
@@ -46,7 +42,6 @@ function CustomFlatList<T>({
         scrollEventThrottle={16}
       />
 
-      {/* Липкий SearchBar поверх FlatList */}
       <View style={[styles.sticky, { height: stickyHeight }]}>
         {props.StickyElementComponent}
       </View>
@@ -62,7 +57,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 10,
-    backgroundColor: "#F3F4F6", // можна змінити на свій
+    backgroundColor: "#F3F4F6",
   },
 });
 

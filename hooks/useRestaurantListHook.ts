@@ -6,28 +6,29 @@ import {
   StyleProp,
   ViewStyle,
 } from "react-native";
+import { useWindowDimensions } from "./useWindowDimensions";
 
-type ICustomFlatListStyles = {
+type CustomFlatListStyles = {
   header: StyleProp<ViewStyle>;
   stickyElement: StyleProp<ViewStyle>;
   topElement?: StyleProp<ViewStyle>;
 };
 
-type TUseCustomFlatListHook = [
+type UseCustomFlatListHook = [
   Animated.Value,
-  ICustomFlatListStyles,
+  CustomFlatListStyles,
   (event: LayoutChangeEvent) => void,
   (event: LayoutChangeEvent) => void,
   (event: LayoutChangeEvent) => void
 ];
 
-const window = Dimensions.get("window");
+const window = useWindowDimensions();
 
-export const useCustomFlatListHook = (): TUseCustomFlatListHook => {
+export const useCustomFlatListHook = (): UseCustomFlatListHook => {
   const scrollY = useRef(new Animated.Value(0)).current;
   const [heights, setHeights] = useState({ header: 0, sticky: 0, topList: 0 });
 
-  const styles: ICustomFlatListStyles = {
+  const styles: CustomFlatListStyles = {
     header: { marginBottom: heights.sticky + heights.topList },
     stickyElement: {
       marginTop: heights.header,

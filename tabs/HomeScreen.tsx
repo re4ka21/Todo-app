@@ -11,7 +11,6 @@ import SearchBar from "../components/SearchBar";
 import TodoCard from "../components/TodoCard";
 import CategoryFilter from "../components/CategoryFilter";
 import CustomFlatList from "../components/CustomFlatList";
-import { useCustomFlatListHook } from "../hooks/useRestaurantListHook";
 
 enum Category {
   AllTickets = "All tickets",
@@ -56,8 +55,8 @@ export default function HomeScreen() {
     extrapolate: "clamp",
   });
   const bgColor = scrollY.interpolate({
-    inputRange: [0, 50], // від 0px до 50px скролу
-    outputRange: ["transparent", "white"], // плавний перехід
+    inputRange: [0, 50],
+    outputRange: ["transparent", "white"],
     extrapolate: "clamp",
   });
   return (
@@ -77,7 +76,7 @@ export default function HomeScreen() {
         StickyElementComponent={
           <Animated.View
             style={{
-              backgroundColor: bgColor, // <-- тут зʼявляється білий фон
+              backgroundColor: bgColor,
             }}
           >
             <Animated.View style={{ height: topSpacerHeight }} />
@@ -93,13 +92,11 @@ export default function HomeScreen() {
           </Animated.View>
         }
         TopListElementComponent={
-          <View>
-            <CategoryFilter
-              options={categories}
-              selected={categoryFilter}
-              onSelect={setCategoryFilter}
-            />
-          </View>
+          <CategoryFilter
+            options={categories}
+            selected={categoryFilter}
+            onSelect={setCategoryFilter}
+          />
         }
       />
       <TouchableOpacity onPress={clearTodo} style={styles.clearButton}>
