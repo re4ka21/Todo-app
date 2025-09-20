@@ -23,6 +23,7 @@ enum Category {
 
 export default function HomeScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;
+
   const todos = useTodoStore((state) => state.todos);
   const removeTodo = useTodoStore((state) => state.removeTodo);
   const clearTodo = useTodoStore((state) => state.clearTodo);
@@ -41,24 +42,31 @@ export default function HomeScreen() {
           (categoryFilter === Category.AllTickets ||
             t.category === categoryFilter)
       )
-      .map((t, i) => ({ id: `REQ-${String(i + 1).padStart(3, "0")}`, ...t }));
+      .map((t, i) => ({
+        ...t,
+        displayId: `REQ-${String(i + 1).padStart(3, "0")}`,
+      }));
   }, [todos, search, categoryFilter]);
+
   const handleDelete = useCallback(
-    (id: string) => {
-      removeTodo(filteredTodos.findIndex((ft) => ft.id === id));
-    },
-    [filteredTodos, removeTodo]
+    (id: string) => removeTodo(id),
+    [removeTodo]
   );
+
+  const handleDeleteAll = useCallback(() => clearTodo(), [clearTodo]);
+
   const topSpacerHeight = scrollY.interpolate({
     inputRange: [0, 40],
     outputRange: [170, 100],
     extrapolate: "clamp",
   });
+
   const bgColor = scrollY.interpolate({
     inputRange: [0, 50],
     outputRange: ["transparent", "white"],
     extrapolate: "clamp",
   });
+
   return (
     <View style={styles.container}>
       <CustomFlatList
@@ -69,24 +77,14 @@ export default function HomeScreen() {
           <TodoCard
             key={item.id}
             todo={item}
-            onDelete={() => handleDelete(item.id)}
+            onDelete={() => removeTodo(item.id)}
           />
         )}
         HeaderComponent={<Text style={styles.title}>Tickets</Text>}
         StickyElementComponent={
-          <Animated.View
-            style={{
-              backgroundColor: bgColor,
-            }}
-          >
+          <Animated.View style={{ backgroundColor: bgColor }}>
             <Animated.View style={{ height: topSpacerHeight }} />
-
-            <Animated.View
-              style={{
-                paddingHorizontal: 16,
-                paddingBottom: 10,
-              }}
-            >
+            <Animated.View style={{ paddingHorizontal: 16, paddingBottom: 10 }}>
               <SearchBar value={search} onChangeText={setSearch} />
             </Animated.View>
           </Animated.View>
@@ -99,7 +97,7 @@ export default function HomeScreen() {
           />
         }
       />
-      <TouchableOpacity onPress={clearTodo} style={styles.clearButton}>
+      <TouchableOpacity onPress={handleDeleteAll} style={styles.clearButton}>
         <Text style={styles.deleteText}>Delete all tickets</Text>
       </TouchableOpacity>
     </View>
@@ -107,10 +105,7 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F3F4F6",
-  },
+  container: { flex: 1, backgroundColor: "#F3F4F6" },
   title: {
     fontSize: 34,
     fontWeight: "700",
@@ -121,15 +116,13 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     position: "absolute",
-    bottom: 0, // відстань від низу екрану
+    bottom: 0,
     left: 16,
     right: 16,
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: "center",
+    backgroundColor: "#FEE2E2",
   },
-  deleteText: {
-    color: "red",
-    fontSize: 14,
-  },
+  deleteText: { color: "red", fontSize: 14 },
 });

@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 type Props = {
   todo: {
-    id: string;
+    displayId: string;
     title: string;
     status: "open" | "in progress";
     createdAt: Date;
@@ -34,7 +34,7 @@ function TodoCard({ todo, onDelete }: Props) {
   return (
     <View style={styles.card}>
       <View style={styles.header}>
-        <Text style={styles.id}>{todo.id}</Text>
+        <Text style={styles.id}>{todo.displayId}</Text>
         <Text
           style={[
             styles.status,
