@@ -11,15 +11,7 @@ import SearchBar from "../components/SearchBar";
 import TodoCard from "../components/TodoCard";
 import CategoryFilter from "../components/CategoryFilter";
 import CustomFlatList from "../components/CustomFlatList";
-
-enum Category {
-  AllTickets = "All tickets",
-  MyTickets = "My tickets",
-  Unassigned = "Unassigned",
-  Bug = "Bug",
-  Feature = "Feature",
-  Improvement = "Improvement",
-}
+import { Category } from "./ticketTypes";
 
 export default function HomeScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -47,11 +39,6 @@ export default function HomeScreen() {
         displayId: `REQ-${String(i + 1).padStart(3, "0")}`,
       }));
   }, [todos, search, categoryFilter]);
-
-  const handleDelete = useCallback(
-    (id: string) => removeTodo(id),
-    [removeTodo]
-  );
 
   const handleDeleteAll = useCallback(() => clearTodo(), [clearTodo]);
 
@@ -124,5 +111,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#FEE2E2",
   },
-  deleteText: { color: "red", fontSize: 14 },
+  deleteText: {
+    color: "red",
+    fontSize: 14,
+  },
 });

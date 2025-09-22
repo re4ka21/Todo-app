@@ -5,26 +5,14 @@ import TextInputField from "../components/TextInputField";
 import SelectButton from "../components/SelectButton";
 import SelectModal from "../components/SelectModal";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-const categories = [
-  "My tickets",
-  "Unassigned",
-  "Bug",
-  "Feature",
-  "Improvement",
-  "Task",
-  "Documentation",
-] as const;
-
-const statuses = ["open", "in progress"] as const;
+import { Category, Status } from "./ticketTypes";
 
 export default function Create() {
   const addTodo = useTodoStore((state) => state.addTodo);
 
   const [text, setText] = useState("");
-  const [category, setCategory] =
-    useState<(typeof categories)[number]>("My tickets");
-  const [status, setStatus] = useState<"open" | "in progress">("open");
+  const [category, setCategory] = useState<Category>(Category.MyTickets);
+  const [status, setStatus] = useState<Status>(Status.Open);
 
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);
   const [statusModalVisible, setStatusModalVisible] = useState(false);
@@ -65,7 +53,9 @@ export default function Create() {
 
       <SelectModal
         visible={categoryModalVisible}
-        options={Array.from(categories)}
+        options={Object.values(Category).filter(
+          (c) => c !== Category.AllTickets
+        )} // ❗ тут не показуємо AllTickets
         selected={category}
         onSelect={setCategory}
         onClose={() => setCategoryModalVisible(false)}
@@ -73,7 +63,7 @@ export default function Create() {
 
       <SelectModal
         visible={statusModalVisible}
-        options={Array.from(statuses)}
+        options={Object.values(Status)}
         selected={status}
         onSelect={setStatus}
         onClose={() => setStatusModalVisible(false)}
@@ -87,13 +77,22 @@ export default function Create() {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 16 },
-  title: { fontSize: 20, fontWeight: "700", marginBottom: 12 },
+  container: {
+    padding: 16,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "700",
+    marginBottom: 12,
+  },
   addButton: {
     backgroundColor: "#047857",
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
   },
-  addButtonText: { color: "white", fontWeight: "700" },
+  addButtonText: {
+    color: "white",
+    fontWeight: "700",
+  },
 });

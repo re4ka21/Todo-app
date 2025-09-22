@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "./HomeScreen";
 import Create from "./CreateScreen";
 import Report from "./ReportScreen";
-
+import MoviesScreen from "./MoviesScreen";
 const Tab = createBottomTabNavigator();
 
 export default function TabsNavigation() {
@@ -46,6 +46,15 @@ export default function TabsNavigation() {
         options={{
           tabBarIcon: ({ size, color }) => (
             <Ionicons name="alert-circle" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="MoviesScreen"
+        component={MoviesScreen}
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <Ionicons name="film-outline" size={size} color={color} />
           ),
         }}
       />
