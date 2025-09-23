@@ -11,7 +11,7 @@ import SearchBar from "../components/SearchBar";
 import TodoCard from "../components/TodoCard";
 import CategoryFilter from "../components/CategoryFilter";
 import CustomFlatList from "../components/CustomFlatList";
-import { Category } from "./ticketTypes";
+import { Category } from "./TicketTypes";
 
 export default function HomeScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;

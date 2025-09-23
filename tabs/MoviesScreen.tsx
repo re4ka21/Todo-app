@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   FlatList,
   TextInput,
-  Button,
-  StyleSheet,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
-
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import CustomButton from "../components/MovieButton";
+import { baseURL } from "./ApiConfig";
 type Movie = {
   id: string;
   title: string;
@@ -16,57 +17,70 @@ type Movie = {
   genre: string;
 };
 
-const baseURL = "https://playground.mockoon.com";
-
 export default function MoviesScreen() {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const queryClient = useQueryClient();
+
   const [title, setTitle] = useState("");
   const [director, setDirector] = useState("");
   const [genre, setGenre] = useState("");
 
-  async function fetchMovies() {
-    try {
+  const {
+    data: movies = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery<Movie[]>({
+    queryKey: ["movies"],
+    queryFn: async () => {
       const res = await fetch(`${baseURL}/movies`);
-      const data = await res.json();
-      setMovies(data);
-    } catch (err) {
-      console.error("Error fetching movies", err);
-    }
-  }
+      return res.json();
+    },
+  });
 
-  async function addMovie() {
-    if (!title || !director || !genre) return;
-
-    const newMovie = { title, director, genre };
-
-    try {
+  const addMutation = useMutation({
+    mutationFn: async (newMovie: Omit<Movie, "id">) => {
       const res = await fetch(`${baseURL}/movies`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newMovie),
       });
-      const data = await res.json();
-      setMovies((prev) => [...prev, data]);
+      return res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData<Movie[]>(["movies"], (old = []) => [
+        ...old,
+        data,
+      ]);
       setTitle("");
       setDirector("");
       setGenre("");
-    } catch (err) {
-      console.error("Error adding movie", err);
-    }
-  }
+    },
+  });
 
-  async function deleteMovie(id: string) {
-    try {
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
       await fetch(`${baseURL}/movies/${id}`, { method: "DELETE" });
-      setMovies((prev) => prev.filter((m) => m.id !== id));
-    } catch (err) {
-      console.error("Error deleting movie", err);
-    }
-  }
+      return id;
+    },
+    onSuccess: (id) => {
+      queryClient.setQueryData<Movie[]>(["movies"], (old = []) =>
+        old.filter((m) => m.id !== id)
+      );
+    },
+  });
 
-  useEffect(() => {
-    fetchMovies();
-  }, []);
+  const handleAdd = () => {
+    if (!title || !director || !genre) return;
+    addMutation.mutate({ title, director, genre });
+  };
+
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id);
+  };
+
+  if (isLoading) return <Text style={{ padding: 16 }}>Loading...</Text>;
+  if (isError)
+    return <Text style={{ padding: 16 }}>Error fetching movies</Text>;
 
   return (
     <View style={styles.container}>
@@ -90,14 +104,10 @@ export default function MoviesScreen() {
         value={genre}
         onChangeText={setGenre}
       />
-      <TouchableOpacity style={styles.button} onPress={addMovie}>
-        <Text style={styles.buttonText}>Add Movie</Text>
-      </TouchableOpacity>
+      <CustomButton onPress={handleAdd} label="Add Movie" />
 
       <View style={{ marginVertical: 10 }}>
-        <TouchableOpacity style={styles.button} onPress={fetchMovies}>
-          <Text style={styles.buttonText}>Refresh List</Text>
-        </TouchableOpacity>
+        <CustomButton onPress={refetch} label="Refresh List" />
       </View>
 
       <FlatList
@@ -111,7 +121,7 @@ export default function MoviesScreen() {
                 {item.director} • {item.genre}
               </Text>
             </View>
-            <TouchableOpacity onPress={() => deleteMovie(item.id)}>
+            <TouchableOpacity onPress={() => handleDelete(item.id)}>
               <Text style={styles.deleteText}>Delete</Text>
             </TouchableOpacity>
           </View>
@@ -154,7 +164,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 16,
   },
-
   movieCard: {
     flexDirection: "row",
     justifyContent: "space-between",
