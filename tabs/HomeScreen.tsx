@@ -16,14 +16,15 @@ import { Category } from "./TicketTypes";
 export default function HomeScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;
 
-  const todos = useTodoStore((state) => state.todos);
-  const removeTodo = useTodoStore((state) => state.removeTodo);
-  const clearTodo = useTodoStore((state) => state.clearTodo);
-  const search = useTodoStore((state) => state.search);
-  const setSearch = useTodoStore((state) => state.setSearch);
-  const categoryFilter = useTodoStore((state) => state.categoryFilter);
-  const setCategoryFilter = useTodoStore((state) => state.setCategoryFilter);
-
+  const {
+    todos,
+    removeTodo,
+    clearTodo,
+    search,
+    setSearch,
+    categoryFilter,
+    setCategoryFilter,
+  } = useTodoStore();
   const categories = Object.values(Category);
 
   const filteredTodos = useMemo(() => {

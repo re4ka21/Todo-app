@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useTodoStore, Todo } from "../store/TodoStore";
+import { useTodoStore } from "../store/TodoStore";
 import TextInputField from "../components/TextInputField";
 import SelectButton from "../components/SelectButton";
 import SelectModal from "../components/SelectModal";
@@ -8,7 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Category, Status } from "./TicketTypes";
 
 export default function Create() {
-  const addTodo = useTodoStore((state) => state.addTodo);
+  const { addTodo } = useTodoStore();
 
   const [text, setText] = useState("");
   const [category, setCategory] = useState<Category>(Category.MyTickets);
@@ -16,6 +16,12 @@ export default function Create() {
 
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);
   const [statusModalVisible, setStatusModalVisible] = useState(false);
+
+  const categoryOptions = useMemo(
+    () => Object.values(Category).filter((c) => c !== Category.AllTickets),
+    []
+  );
+  const statusOptions = useMemo(() => Object.values(Status), []);
 
   const handleAdd = useCallback(() => {
     if (!text.trim()) return;
@@ -25,7 +31,7 @@ export default function Create() {
       category,
       status,
       createdAt: new Date(),
-    } as Todo);
+    });
 
     setText("");
   }, [text, category, status, addTodo]);
@@ -53,9 +59,7 @@ export default function Create() {
 
       <SelectModal
         visible={categoryModalVisible}
-        options={Object.values(Category).filter(
-          (c) => c !== Category.AllTickets
-        )} // ❗ тут не показуємо AllTickets
+        options={categoryOptions}
         selected={category}
         onSelect={setCategory}
         onClose={() => setCategoryModalVisible(false)}
@@ -63,7 +67,7 @@ export default function Create() {
 
       <SelectModal
         visible={statusModalVisible}
-        options={Object.values(Status)}
+        options={statusOptions}
         selected={status}
         onSelect={setStatus}
         onClose={() => setStatusModalVisible(false)}
