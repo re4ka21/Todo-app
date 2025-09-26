@@ -8,24 +8,18 @@ import {
   FlatList,
   StyleSheet,
 } from "react-native";
+import { TicketCategory } from "../constant";
 
 type Props = {
-  category: string;
-  setCategory: (value: string) => void;
+  category: TicketCategory;
+  setCategory: (value: TicketCategory) => void;
 };
 
 export default function CategoryPicker({ category, setCategory }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
+  const categories = Object.values(TicketCategory);
 
-  const categories = [
-    "IT Support",
-    "HR",
-    "Finance",
-    "Office Supplies",
-    "Maintenance",
-  ];
-
-  const handleSelectCategory = (item: string) => {
+  const handleSelectCategory = (item: TicketCategory) => {
     setCategory(item);
     setModalVisible(false);
   };

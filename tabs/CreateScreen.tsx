@@ -5,7 +5,7 @@ import TextInputField from "../components/TextInputField";
 import SelectButton from "../components/SelectButton";
 import SelectModal from "../components/SelectModal";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Category, Status } from "./TicketTypes";
+import { Category, Status } from "../constant";
 
 export default function Create() {
   const { addTodo } = useTodoStore();

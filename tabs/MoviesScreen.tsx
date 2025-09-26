@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -9,7 +9,8 @@ import {
 } from "react-native";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import CustomButton from "../components/MovieButton";
-import { baseURL } from "./ApiConfig";
+import { baseURL } from "../api/ApiConfig";
+
 type Movie = {
   id: string;
   title: string;
@@ -33,6 +34,7 @@ export default function MoviesScreen() {
     queryKey: ["movies"],
     queryFn: async () => {
       const res = await fetch(`${baseURL}/movies`);
+      if (!res.ok) throw new Error("Failed to fetch movies");
       return res.json();
     },
   });
@@ -44,13 +46,11 @@ export default function MoviesScreen() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newMovie),
       });
+      if (!res.ok) throw new Error("Failed to add movie");
       return res.json();
     },
-    onSuccess: (data) => {
-      queryClient.setQueryData<Movie[]>(["movies"], (old = []) => [
-        ...old,
-        data,
-      ]);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["movies"] });
       setTitle("");
       setDirector("");
       setGenre("");
@@ -59,28 +59,32 @@ export default function MoviesScreen() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      await fetch(`${baseURL}/movies/${id}`, { method: "DELETE" });
+      const res = await fetch(`${baseURL}/movies/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete movie");
       return id;
     },
-    onSuccess: (id) => {
-      queryClient.setQueryData<Movie[]>(["movies"], (old = []) =>
-        old.filter((m) => m.id !== id)
-      );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["movies"] });
     },
   });
 
-  const handleAdd = () => {
+  const handleAdd = useCallback(() => {
     if (!title || !director || !genre) return;
     addMutation.mutate({ title, director, genre });
-  };
+  }, [title, director, genre]);
 
-  const handleDelete = (id: string) => {
+  const handleDelete = useCallback((id: string) => {
     deleteMutation.mutate(id);
-  };
+  }, []);
 
-  if (isLoading) return <Text style={{ padding: 16 }}>Loading...</Text>;
-  if (isError)
-    return <Text style={{ padding: 16 }}>Error fetching movies</Text>;
+  const handleRefetch = useCallback(() => {
+    refetch();
+  }, [refetch]);
+
+  if (isLoading || isError) {
+    const message = isLoading ? "Loading..." : "Error fetching movies";
+    return <Text style={styles.statusText}>{message}</Text>;
+  }
 
   return (
     <View style={styles.container}>
@@ -107,7 +111,7 @@ export default function MoviesScreen() {
       <CustomButton onPress={handleAdd} label="Add Movie" />
 
       <View style={{ marginVertical: 10 }}>
-        <CustomButton onPress={refetch} label="Refresh List" />
+        <CustomButton onPress={handleRefetch} label="Refresh List" />
       </View>
 
       <FlatList
@@ -158,6 +162,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
     marginBottom: 10,
+  },
+  statusText: {
+    padding: 16,
+    fontSize: 16,
   },
   buttonText: {
     color: "#fff",

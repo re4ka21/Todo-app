@@ -12,7 +12,7 @@ type TodoStore = {
   todos: Todo[];
   search: string;
   categoryFilter: string;
-  addTodo: (todo: Omit<Todo, "id">) => void; // id генерується автоматично
+  addTodo: (todo: Omit<Todo, "id">) => void;
   removeTodo: (id: string) => void;
   clearTodo: () => void;
   setSearch: (text: string) => void;
@@ -29,7 +29,7 @@ export const useTodoStore = create<TodoStore>((set) => ({
         ...state.todos,
         {
           ...todo,
-          id: `REQ-${state.todos.length + 1}-${Date.now()}`, // унікальний id
+          id: `REQ-${state.todos.length + 1}-${Date.now()}`,
         },
       ],
     })),
