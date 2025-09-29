@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import CustomButton from "../components/MovieButton";
+import CustomButton from "../components/Buttons/MovieButton";
 import { baseURL } from "../api/ApiConfig";
 
 type Movie = {
@@ -82,8 +82,11 @@ export default function MoviesScreen() {
   }, [refetch]);
 
   if (isLoading || isError) {
-    const message = isLoading ? "Loading..." : "Error fetching movies";
-    return <Text style={styles.statusText}>{message}</Text>;
+    return (
+      <Text style={styles.statusText}>
+        {isLoading ? "Loading..." : "Error fetching movies"}
+      </Text>
+    );
   }
 
   return (

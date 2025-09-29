@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   row: { flexDirection: "row", alignItems: "center", gap: 8 },
   input: {
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: "#047857",
     borderRadius: 8,
     padding: 10,
     flex: 1,

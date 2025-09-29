@@ -8,15 +8,18 @@ import {
 } from "react-native";
 
 type Props = {
-  label: string;
+  label?: string;
   height?: number;
 } & TextInputProps;
 
-export default function InputField({ label, height, ...props }: Props) {
+export default function InputField({ label, height, style, ...props }: Props) {
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.label}>{label}</Text>
-      <TextInput style={[styles.input, height ? { height } : {}]} {...props} />
+      {label && <Text style={styles.label}>{label}</Text>}
+      <TextInput
+        style={[styles.input, height ? { height } : {}, style]}
+        {...props}
+      />
     </View>
   );
 }
@@ -26,7 +29,7 @@ const styles = StyleSheet.create({
   label: { fontWeight: "600", marginBottom: 6 },
   input: {
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: "#047857",
     borderRadius: 8,
     padding: 10,
     fontSize: 14,

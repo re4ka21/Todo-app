@@ -1,11 +1,12 @@
 import { useState, useCallback, useMemo } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useTodoStore } from "../store/TodoStore";
-import TextInputField from "../components/TextInputField";
-import SelectButton from "../components/SelectButton";
+
+import SelectButton from "../components/Buttons/SelectButton";
 import SelectModal from "../components/SelectModal";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Category, Status } from "../constant";
+import InputField from "@/components/InputField";
 
 export default function Create() {
   const { addTodo } = useTodoStore();
@@ -40,7 +41,7 @@ export default function Create() {
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Create Todo</Text>
 
-      <TextInputField
+      <InputField
         value={text}
         onChangeText={setText}
         placeholder="Enter task"
