@@ -8,14 +8,16 @@ import {
   StyleSheet,
 } from "react-native";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import CustomButton from "../components/Buttons/MovieButton";
+import AppButton from "../components/AppButton";
 import { baseURL } from "../api/ApiConfig";
 
 type Movie = {
-  id: string;
+  id?: string;
   title: string;
   director: string;
   genre: string;
+  releaseYear?: string | number;
+  rating?: string | number;
 };
 
 export default function MoviesScreen() {
@@ -26,11 +28,11 @@ export default function MoviesScreen() {
   const [genre, setGenre] = useState("");
 
   const {
-    data: movies = [],
+    data: moviesRaw = [],
     isLoading,
     isError,
     refetch,
-  } = useQuery<Movie[]>({
+  } = useQuery<Movie[] | string[]>({
     queryKey: ["movies"],
     queryFn: async () => {
       const res = await fetch(`${baseURL}/movies`);
@@ -38,6 +40,19 @@ export default function MoviesScreen() {
       return res.json();
     },
   });
+
+  const movies: Movie[] = (moviesRaw as any[])
+    .map((item) => {
+      if (typeof item === "string") {
+        try {
+          return JSON.parse(item);
+        } catch {
+          return null;
+        }
+      }
+      return item;
+    })
+    .filter((item): item is Movie => !!item && typeof item === "object");
 
   const addMutation = useMutation({
     mutationFn: async (newMovie: Omit<Movie, "id">) => {
@@ -73,8 +88,8 @@ export default function MoviesScreen() {
     addMutation.mutate({ title, director, genre });
   }, [title, director, genre]);
 
-  const handleDelete = useCallback((id: string) => {
-    deleteMutation.mutate(id);
+  const handleDelete = useCallback((id?: string) => {
+    if (id) deleteMutation.mutate(id);
   }, []);
 
   const handleRefetch = useCallback(() => {
@@ -111,26 +126,44 @@ export default function MoviesScreen() {
         value={genre}
         onChangeText={setGenre}
       />
-      <CustomButton onPress={handleAdd} label="Add Movie" />
+      <AppButton
+        label="Add Movie"
+        onPress={handleAdd}
+        style={styles.button}
+        textStyle={styles.buttonText}
+      />
 
       <View style={{ marginVertical: 10 }}>
-        <CustomButton onPress={handleRefetch} label="Refresh List" />
+        <AppButton
+          label="Refresh List"
+          onPress={handleRefetch}
+          style={styles.button}
+          textStyle={styles.buttonText}
+        />
       </View>
 
       <FlatList
         data={movies}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item, index) => item.id ?? index.toString()}
         renderItem={({ item }) => (
           <View style={styles.movieCard}>
             <View>
-              <Text style={styles.movieTitle}>{item.title}</Text>
+              <Text style={styles.movieTitle}>{item.title ?? "No title"}</Text>
               <Text style={styles.movieInfo}>
-                {item.director} • {item.genre}
+                {item.director ?? "Unknown"} • {item.genre ?? "Unknown"}
               </Text>
+              {item.releaseYear && (
+                <Text style={styles.movieInfo}>Year: {item.releaseYear}</Text>
+              )}
+              {item.rating !== undefined && (
+                <Text style={styles.movieInfo}>Rating: {item.rating}</Text>
+              )}
             </View>
-            <TouchableOpacity onPress={() => handleDelete(item.id)}>
-              <Text style={styles.deleteText}>Delete</Text>
-            </TouchableOpacity>
+            {item.id && (
+              <TouchableOpacity onPress={() => handleDelete(item.id)}>
+                <Text style={styles.deleteText}>Delete</Text>
+              </TouchableOpacity>
+            )}
           </View>
         )}
         contentContainerStyle={{ paddingBottom: 50 }}
@@ -159,20 +192,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     backgroundColor: "#fff",
   },
-  button: {
-    backgroundColor: "#047857",
-    padding: 12,
-    borderRadius: 8,
-    alignItems: "center",
-    marginBottom: 10,
-  },
   statusText: {
     padding: 16,
-    fontSize: 16,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "600",
     fontSize: 16,
   },
   movieCard: {
@@ -197,6 +218,14 @@ const styles = StyleSheet.create({
   },
   deleteText: {
     color: "red",
+    fontWeight: "600",
+  },
+  button: {
+    backgroundColor: "#047857",
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: "#fff",
     fontWeight: "600",
   },
 });

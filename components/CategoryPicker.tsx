@@ -5,10 +5,10 @@ import {
   TextInput,
   TouchableOpacity,
   Modal,
-  FlatList,
   StyleSheet,
 } from "react-native";
 import { TicketCategory } from "../constant";
+import OptionList from "./OptionList";
 
 type Props = {
   category: TicketCategory;
@@ -48,17 +48,10 @@ export default function CategoryPicker({ category, setCategory }: Props) {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>Select Category</Text>
-            <FlatList
-              data={categories}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.modalItem}
-                  onPress={() => handleSelectCategory(item)}
-                >
-                  <Text style={styles.modalItemText}>{item}</Text>
-                </TouchableOpacity>
-              )}
+            <OptionList
+              options={categories}
+              selected={category}
+              onSelect={handleSelectCategory}
             />
             <TouchableOpacity
               style={styles.modalCloseBtn}

@@ -1,11 +1,19 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import HeaderButton from "./Buttons/HeaderButton";
+import AppButton from "./AppButton";
 export default function Header() {
   return (
     <View style={styles.header}>
-      <HeaderButton label="Cancel" />
+      <AppButton
+        label="Cancel"
+        style={styles.button}
+        textStyle={styles.buttonText}
+      />
       <Text style={styles.headerTitle}>New</Text>
-      <HeaderButton label="Create" />
+      <AppButton
+        label="Create"
+        style={styles.button}
+        textStyle={styles.buttonText}
+      />
     </View>
   );
 }
@@ -19,4 +27,8 @@ const styles = StyleSheet.create({
     borderColor: "#eee",
   },
   headerTitle: { fontSize: 18, fontWeight: "600" },
+  button: {
+    backgroundColor: "transparent",
+  },
+  buttonText: { color: "teal", fontSize: 16 },
 });

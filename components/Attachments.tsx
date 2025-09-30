@@ -5,7 +5,7 @@ export default function Attachments() {
   return (
     <View style={styles.wrapper}>
       <Text style={styles.label}>Attachments</Text>
-      <TouchableOpacity style={styles.addBtn}>
+      <TouchableOpacity style={styles.addButton}>
         <Text style={styles.addText}>+ ADD</Text>
       </TouchableOpacity>
     </View>
@@ -15,7 +15,7 @@ export default function Attachments() {
 const styles = StyleSheet.create({
   wrapper: { marginBottom: 12 },
   label: { fontWeight: "600", marginBottom: 6 },
-  addBtn: {
+  addButton: {
     alignSelf: "flex-start",
     backgroundColor: "#DFF4F0",
     paddingVertical: 8,

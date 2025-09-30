@@ -2,12 +2,11 @@ import { useState, useCallback, useMemo } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useTodoStore } from "../store/TodoStore";
 
-import SelectButton from "../components/Buttons/SelectButton";
 import SelectModal from "../components/SelectModal";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Category, Status } from "../constant";
 import InputField from "@/components/InputField";
-
+import AppButton from "../components/AppButton";
 export default function Create() {
   const { addTodo } = useTodoStore();
 
@@ -46,16 +45,19 @@ export default function Create() {
         onChangeText={setText}
         placeholder="Enter task"
       />
-
-      <SelectButton
+      <AppButton
         label="Category"
         value={category}
         onPress={() => setCategoryModalVisible(true)}
+        style={styles.button}
+        textStyle={styles.buttonText}
       />
-      <SelectButton
+      <AppButton
         label="Status"
         value={status}
         onPress={() => setStatusModalVisible(true)}
+        style={styles.button}
+        textStyle={styles.buttonText}
       />
 
       <SelectModal
@@ -100,4 +102,11 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "700",
   },
+  button: {
+    borderWidth: 1,
+    borderColor: "#047857",
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  buttonText: { color: "#047857", fontWeight: "700" },
 });
