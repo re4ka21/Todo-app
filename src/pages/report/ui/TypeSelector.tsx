@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-
-import AppButton from "./AppButton";
+import { AppButton } from "@/shared/button";
 type Props = {
   type: string;
   setType: (value: string) => void;

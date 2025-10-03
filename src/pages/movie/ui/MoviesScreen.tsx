@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import AppButton from "../components/AppButton";
+import { AppButton } from "@/shared/button";
 import { baseURL } from "../api/ApiConfig";
 
 type Movie = {

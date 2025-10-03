@@ -1,10 +1,10 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import HomeScreen from "./HomeScreen";
-import Create from "./CreateScreen";
-import Report from "./ReportScreen";
-import MoviesScreen from "./MoviesScreen";
+import { HomeScreen } from "@/pages/home";
+import { Create } from "@/pages/create";
+import { Report } from "@/pages/report";
+import { MoviesScreen } from "@/pages/movie";
 const Tab = createBottomTabNavigator();
 
 export default function TabsNavigation() {

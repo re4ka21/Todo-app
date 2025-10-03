@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import AppButton from "./AppButton";
+import { AppButton } from "@/shared/button";
 export default function Header() {
   return (
     <View style={styles.header}>

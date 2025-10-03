@@ -6,12 +6,12 @@ import {
   Animated,
   TouchableOpacity,
 } from "react-native";
-import { useTodoStore } from "../store/TodoStore";
-import SearchBar from "../components/SearchBar";
-import TodoCard from "../components/TodoCard";
-import CategoryFilter from "../components/CategoryFilter";
-import CustomFlatList from "../components/CustomFlatList";
-import { Category } from "../constant";
+import { useTodoStore } from "@/app/store";
+import SearchBar from "./SearchBar";
+import TodoCard from "./TodoCard";
+import { CategoryFilter } from "@/widgets/TodoFilter";
+import { CustomFlatList } from "@/features/FlatList";
+import { Category } from "@/pages/constants/categories";
 
 export default function HomeScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;

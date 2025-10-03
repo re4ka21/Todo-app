@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
-import Header from "../components/Header";
-import TypeSelector from "../components/TypeSelector";
-import InputField from "../components/InputField";
-import CategoryPicker from "../components/CategoryPicker";
-import Attachments from "../components/Attachments";
+import Header from "./Header";
+import TypeSelector from "../../../../components/TypeSelector";
+import InputField from "@/shared/InputField/ui/InputField";
+import CategoryPicker from "./CategoryPicker";
+import Attachments from "./Attachments";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TicketCategory } from "../constant";
+import { TicketCategory } from "@/shared/constants/TicketCategory";
 export default function NewRequestScreen() {
   const [type, setType] = useState("request");
   const [category, setCategory] = useState("");

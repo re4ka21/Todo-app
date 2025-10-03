@@ -1,12 +1,13 @@
 import { useState, useCallback, useMemo } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useTodoStore } from "../store/TodoStore";
+import { useTodoStore } from "@/app/store";
 
-import SelectModal from "../components/SelectModal";
+import SelectModal from "./SelectModal";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Category, Status } from "../constant";
-import InputField from "@/components/InputField";
-import AppButton from "../components/AppButton";
+import { Category } from "@/pages/constants/categories";
+import { Status } from "@/pages/create/constants/status";
+import InputField from "@/shared/InputField/ui/InputField";
+import { AppButton } from "@/shared/button";
 export default function Create() {
   const { addTodo } = useTodoStore();
 
