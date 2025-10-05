@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
 import Header from "./Header";
 import TypeSelector from "./TypeSelector";
-import InputField from "@/shared/InputField/ui/InputField";
+import { InputField } from "@/shared/InputField";
 import CategoryPicker from "./CategoryPicker";
 import Attachments from "./Attachments";
 import { SafeAreaView } from "react-native-safe-area-context";
