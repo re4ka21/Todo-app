@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
 import Header from "./Header";
-import TypeSelector from "../../../../components/TypeSelector";
+import TypeSelector from "./TypeSelector";
 import InputField from "@/shared/InputField/ui/InputField";
 import CategoryPicker from "./CategoryPicker";
 import Attachments from "./Attachments";

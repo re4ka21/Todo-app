@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { TicketCategory } from "@/shared/constants/TicketCategory";
-import { OptionList } from "@/shared/optionList";
+import { OptionList } from "@/shared/OptionList";
 
 type Props = {
   category: TicketCategory;

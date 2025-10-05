@@ -16,7 +16,7 @@ type Props = {
   textStyle?: TextStyle;
 };
 
-export default function AppButton({
+export default function Button({
   label,
   onPress,
   value,

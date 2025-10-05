@@ -6,9 +6,9 @@ import {
   Animated,
   TouchableOpacity,
 } from "react-native";
-import { useTodoStore } from "@/app/store";
+import { useTodoStore } from "@/entities/todo";
 import SearchBar from "./SearchBar";
-import TodoCard from "./TodoCard";
+import { TodoCard } from "@/entities/todo";
 import { CategoryFilter } from "@/widgets/TodoFilter";
 import { CustomFlatList } from "@/features/FlatList";
 import { Category } from "@/pages/constants/categories";

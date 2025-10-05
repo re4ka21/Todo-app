@@ -1,13 +1,13 @@
 import { useState, useCallback, useMemo } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useTodoStore } from "@/app/store";
+import { Text, TouchableOpacity, StyleSheet } from "react-native";
+import { useTodoStore } from "@/entities/todo";
 
 import SelectModal from "./SelectModal";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Category } from "@/pages/constants/categories";
 import { Status } from "@/pages/create/constants/status";
 import InputField from "@/shared/InputField/ui/InputField";
-import { AppButton } from "@/shared/button";
+import { Button } from "@/shared/Button";
 export default function Create() {
   const { addTodo } = useTodoStore();
 
@@ -46,14 +46,14 @@ export default function Create() {
         onChangeText={setText}
         placeholder="Enter task"
       />
-      <AppButton
+      <Button
         label="Category"
         value={category}
         onPress={() => setCategoryModalVisible(true)}
         style={styles.button}
         textStyle={styles.buttonText}
       />
-      <AppButton
+      <Button
         label="Status"
         value={status}
         onPress={() => setStatusModalVisible(true)}

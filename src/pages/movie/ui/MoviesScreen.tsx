@@ -8,8 +8,8 @@ import {
   StyleSheet,
 } from "react-native";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { AppButton } from "@/shared/button";
-import { baseURL } from "../api/ApiConfig";
+import { Button } from "@/shared/Button";
+import { baseURL } from "../../../shared/api/ApiConfig";
 
 type Movie = {
   id?: string;
@@ -126,7 +126,7 @@ export default function MoviesScreen() {
         value={genre}
         onChangeText={setGenre}
       />
-      <AppButton
+      <Button
         label="Add Movie"
         onPress={handleAdd}
         style={styles.button}
@@ -134,7 +134,7 @@ export default function MoviesScreen() {
       />
 
       <View style={{ marginVertical: 10 }}>
-        <AppButton
+        <Button
           label="Refresh List"
           onPress={handleRefetch}
           style={styles.button}

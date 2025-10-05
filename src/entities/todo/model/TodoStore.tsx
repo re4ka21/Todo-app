@@ -18,7 +18,6 @@ type TodoStore = {
   setSearch: (text: string) => void;
   setCategoryFilter: (category: string) => void;
 };
-
 export const useTodoStore = create<TodoStore>((set) => ({
   todos: [],
   search: "",

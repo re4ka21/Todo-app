@@ -1,5 +1,5 @@
 import React from "react";
-import { OptionList } from "@/shared/optionList";
+import { OptionList } from "@/shared/OptionList";
 
 type Props<T extends string> = {
   options?: readonly T[];
