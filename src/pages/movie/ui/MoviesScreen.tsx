@@ -1,15 +1,15 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import {
   View,
   Text,
   FlatList,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/shared/Button";
-import { baseURL } from "../../../shared/api/ApiConfig";
+import { baseURL } from "@/shared/api/ApiConfig";
+import { AddMovie } from "@/features/movies";
 
 type Movie = {
   id?: string;
@@ -22,10 +22,6 @@ type Movie = {
 
 export default function MoviesScreen() {
   const queryClient = useQueryClient();
-
-  const [title, setTitle] = useState("");
-  const [director, setDirector] = useState("");
-  const [genre, setGenre] = useState("");
 
   const {
     data: moviesRaw = [],
@@ -54,24 +50,6 @@ export default function MoviesScreen() {
     })
     .filter((item): item is Movie => !!item && typeof item === "object");
 
-  const addMutation = useMutation({
-    mutationFn: async (newMovie: Omit<Movie, "id">) => {
-      const res = await fetch(`${baseURL}/movies`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newMovie),
-      });
-      if (!res.ok) throw new Error("Failed to add movie");
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["movies"] });
-      setTitle("");
-      setDirector("");
-      setGenre("");
-    },
-  });
-
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const res = await fetch(`${baseURL}/movies/${id}`, { method: "DELETE" });
@@ -82,11 +60,6 @@ export default function MoviesScreen() {
       queryClient.invalidateQueries({ queryKey: ["movies"] });
     },
   });
-
-  const handleAdd = useCallback(() => {
-    if (!title || !director || !genre) return;
-    addMutation.mutate({ title, director, genre });
-  }, [title, director, genre]);
 
   const handleDelete = useCallback((id?: string) => {
     if (id) deleteMutation.mutate(id);
@@ -108,30 +81,7 @@ export default function MoviesScreen() {
     <View style={styles.container}>
       <Text style={styles.heading}>🎬 Movies</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Title"
-        value={title}
-        onChangeText={setTitle}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Director"
-        value={director}
-        onChangeText={setDirector}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Genre"
-        value={genre}
-        onChangeText={setGenre}
-      />
-      <Button
-        label="Add Movie"
-        onPress={handleAdd}
-        style={styles.button}
-        textStyle={styles.buttonText}
-      />
+      <AddMovie />
 
       <View style={{ marginVertical: 10 }}>
         <Button
@@ -183,14 +133,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "700",
     marginBottom: 12,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#D1D5DB",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 8,
-    backgroundColor: "#fff",
   },
   statusText: {
     padding: 16,

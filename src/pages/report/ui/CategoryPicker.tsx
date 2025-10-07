@@ -7,7 +7,7 @@ import {
   Modal,
   StyleSheet,
 } from "react-native";
-import { TicketCategory } from "@/shared/constants/TicketCategory";
+import { TicketCategory } from "@/shared/constants/categories";
 import { OptionList } from "@/shared/OptionList";
 
 type Props = {

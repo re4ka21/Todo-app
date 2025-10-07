@@ -6,7 +6,7 @@ import { InputField } from "@/shared/InputField";
 import CategoryPicker from "./CategoryPicker";
 import Attachments from "./Attachments";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TicketCategory } from "@/shared/constants/TicketCategory";
+import { TicketCategory } from "@/shared/constants/categories";
 export default function NewRequestScreen() {
   const [type, setType] = useState("request");
   const [category, setCategory] = useState("");

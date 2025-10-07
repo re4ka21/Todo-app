@@ -11,7 +11,7 @@ type CustomFlatListProps<T> = Omit<FlatListProps<T>, "ListHeaderComponent"> & {
   stickyHeight?: number;
 };
 
-function CustomFlatList<T>({
+function TodoList<T>({
   style,
   scrollY,
   stickyHeight = 60,
@@ -61,4 +61,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomFlatList;
+export default TodoList;

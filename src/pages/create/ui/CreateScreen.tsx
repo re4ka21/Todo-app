@@ -4,7 +4,7 @@ import { useTodoStore } from "@/entities/todo";
 
 import SelectModal from "./SelectModal";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Category } from "@/pages/constants/categories";
+import { Category } from "@/shared/constants/categories";
 import { Status } from "@/pages/create/constants/status";
 import { InputField } from "@/shared/InputField";
 import { Button } from "@/shared/Button";

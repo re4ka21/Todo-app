@@ -9,9 +9,9 @@ import {
 import { useTodoStore } from "@/entities/todo";
 import SearchBar from "./SearchBar";
 import { TodoCard } from "@/entities/todo";
-import { CategoryFilter } from "@/widgets/TodoFilter";
-import { CustomFlatList } from "@/features/FlatList";
-import { Category } from "@/pages/constants/categories";
+import CategoryFilter from "./CategoryFilter";
+import { TodoList } from "@/widgets/TodoList";
+import { Category } from "@/shared/constants/categories";
 
 export default function HomeScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -57,7 +57,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <CustomFlatList
+      <TodoList
         data={filteredTodos}
         scrollY={scrollY}
         keyExtractor={(item) => item.id}
