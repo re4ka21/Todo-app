@@ -1,9 +1,10 @@
+import { Pressable } from "react-native";
 import {
-  TouchableOpacity,
   Text,
   StyleSheet,
   ViewStyle,
   TextStyle,
+  StyleProp,
 } from "react-native";
 
 type Props = {
@@ -12,8 +13,8 @@ type Props = {
   value?: string;
   emoji?: string;
   active?: boolean;
-  style?: ViewStyle;
-  textStyle?: TextStyle;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
 };
 
 export default function Button({
@@ -26,7 +27,7 @@ export default function Button({
   textStyle,
 }: Props) {
   return (
-    <TouchableOpacity
+    <Pressable
       style={[styles.base, style, active && styles.active]}
       onPress={onPress}
     >
@@ -35,7 +36,7 @@ export default function Button({
         {label}
         {value ? `: ${value}` : ""}
       </Text>
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 

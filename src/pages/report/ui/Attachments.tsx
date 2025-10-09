@@ -1,13 +1,14 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-
+import { View, Text, StyleSheet } from "react-native";
+import { Button } from "@/shared/Button";
 export default function Attachments() {
   return (
     <View style={styles.wrapper}>
       <Text style={styles.label}>Attachments</Text>
-      <TouchableOpacity style={styles.addButton}>
-        <Text style={styles.addText}>+ ADD</Text>
-      </TouchableOpacity>
+      <Button
+        label="+ ADD"
+        style={styles.addButton}
+        textStyle={styles.addText}
+      />
     </View>
   );
 }

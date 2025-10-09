@@ -1,6 +1,7 @@
 import React, { memo, useMemo, useCallback } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Button } from "@/shared/Button";
 
 type Props = {
   todo: {
@@ -11,6 +12,7 @@ type Props = {
   };
   onDelete: () => void;
 };
+
 function TodoCard({ todo, onDelete }: Props) {
   const statusStyle = useMemo(() => {
     switch (todo.status) {
@@ -22,6 +24,7 @@ function TodoCard({ todo, onDelete }: Props) {
         return { backgroundColor: "#E5E7EB", color: "#374151" };
     }
   }, [todo.status]);
+
   const timeAgo = useCallback((date: string | Date) => {
     const now = new Date();
     const past = new Date(date);
@@ -31,6 +34,7 @@ function TodoCard({ todo, onDelete }: Props) {
     if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
     return `${Math.floor(diff / 86400)} days ago`;
   }, []);
+
   return (
     <View style={styles.card}>
       <View style={styles.header}>
@@ -56,9 +60,13 @@ function TodoCard({ todo, onDelete }: Props) {
           <Ionicons name="time-outline" size={14} color="#6B7280" />
           <Text style={styles.date}>{timeAgo(todo.createdAt)}</Text>
         </View>
-        <TouchableOpacity onPress={onDelete}>
-          <Text style={styles.deleteText}>Delete</Text>
-        </TouchableOpacity>
+
+        <Button
+          label="Delete"
+          onPress={onDelete}
+          style={styles.button}
+          textStyle={styles.textButton}
+        />
       </View>
     </View>
   );
@@ -121,8 +129,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 4,
   },
-  deleteText: {
+  textButton: {
     color: "red",
-    fontSize: 14,
+    fontWeight: "600",
+  },
+  button: {
+    backgroundColor: "#FEE2E2",
+    paddingHorizontal: 12,
   },
 });

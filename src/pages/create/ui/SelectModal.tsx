@@ -1,6 +1,5 @@
-//SelectModal
-
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Modal, View, StyleSheet } from "react-native";
+import { Button } from "@/shared/Button";
 
 type Props<T extends string> = {
   visible: boolean;
@@ -24,19 +23,17 @@ export default function SelectModal<T extends string>({
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           {options.map((option) => (
-            <TouchableOpacity
+            <Button
               key={option}
+              label={option}
               onPress={() => {
                 onSelect(option);
                 onClose();
               }}
-              style={[
-                styles.option,
-                option === selected && styles.selectedOption,
-              ]}
-            >
-              <Text>{option}</Text>
-            </TouchableOpacity>
+              active={option === selected}
+              style={styles.option}
+              textStyle={styles.optionText}
+            />
           ))}
         </View>
       </View>
@@ -57,6 +54,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     minWidth: 200,
   },
-  option: { padding: 12 },
-  selectedOption: { backgroundColor: "#e0e0e0" },
+  option: {
+    marginVertical: 4,
+  },
+  optionText: {
+    fontSize: 16,
+  },
 });

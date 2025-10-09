@@ -1,18 +1,12 @@
 import React, { useMemo, useRef, useCallback } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  Animated,
-  TouchableOpacity,
-} from "react-native";
+import { Text, View, StyleSheet, Animated } from "react-native";
 import { useTodoStore } from "@/entities/todo";
 import SearchBar from "./SearchBar";
 import { TodoCard } from "@/entities/todo";
 import CategoryFilter from "./CategoryFilter";
 import { TodoList } from "@/widgets/TodoList";
 import { Category } from "@/shared/constants/categories";
-
+import { Button } from "@/shared/Button";
 export default function HomeScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -85,9 +79,12 @@ export default function HomeScreen() {
           />
         }
       />
-      <TouchableOpacity onPress={handleDeleteAll} style={styles.clearButton}>
-        <Text style={styles.deleteText}>Delete all tickets</Text>
-      </TouchableOpacity>
+      <Button
+        label="Delete All"
+        onPress={handleDeleteAll}
+        style={styles.clearButton}
+        textStyle={styles.deleteText}
+      />
     </View>
   );
 }

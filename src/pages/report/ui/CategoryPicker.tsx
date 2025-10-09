@@ -1,15 +1,8 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Modal,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TextInput, Modal, StyleSheet } from "react-native";
 import { TicketCategory } from "@/shared/constants/categories";
 import { OptionList } from "@/shared/OptionList";
-
+import { Button } from "@/shared/Button";
 type Props = {
   category: TicketCategory;
   setCategory: (value: TicketCategory) => void;
@@ -34,9 +27,11 @@ export default function CategoryPicker({ category, setCategory }: Props) {
           value={category}
           editable={false}
         />
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
-          <Text style={styles.selectBtn}>Select</Text>
-        </TouchableOpacity>
+        <Button
+          label="Select"
+          onPress={() => setModalVisible(true)}
+          textStyle={styles.selectBtn}
+        />
       </View>
 
       <Modal
@@ -53,12 +48,12 @@ export default function CategoryPicker({ category, setCategory }: Props) {
               selected={category}
               onSelect={handleSelectCategory}
             />
-            <TouchableOpacity
-              style={styles.modalCloseBtn}
+            <Button
+              label="Close"
               onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.modalCloseText}>Close</Text>
-            </TouchableOpacity>
+              style={styles.modalCloseBtn}
+              textStyle={styles.modalCloseText}
+            />
           </View>
         </View>
       </Modal>

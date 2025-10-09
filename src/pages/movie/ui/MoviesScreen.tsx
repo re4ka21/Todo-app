@@ -1,11 +1,5 @@
 import React, { useCallback } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/shared/Button";
 import { baseURL } from "@/shared/api/ApiConfig";
@@ -110,9 +104,11 @@ export default function MoviesScreen() {
               )}
             </View>
             {item.id && (
-              <TouchableOpacity onPress={() => handleDelete(item.id)}>
-                <Text style={styles.deleteText}>Delete</Text>
-              </TouchableOpacity>
+              <Button
+                label="Delete"
+                onPress={() => handleDelete(item.id)}
+                textStyle={styles.deleteText}
+              />
             )}
           </View>
         )}

@@ -1,7 +1,5 @@
-// OptionList.tsx
-import React from "react";
-import { FlatList, TouchableOpacity, Text, StyleSheet } from "react-native";
-
+import { FlatList, StyleSheet } from "react-native";
+import { Button } from "@/shared/Button";
 type OptionListProps<T extends string> = {
   options: readonly T[];
   selected?: T;
@@ -24,14 +22,18 @@ export default function OptionList<T extends string>({
       renderItem={({ item }) => {
         const isSelected = item === selected;
         return (
-          <TouchableOpacity
-            style={[styles.option, isSelected && styles.optionActive]}
+          <Button
+            label={item}
             onPress={() => onSelect(item)}
-          >
-            <Text style={[styles.text, isSelected && styles.textActive]}>
-              {item}
-            </Text>
-          </TouchableOpacity>
+            style={[
+              styles.option,
+              ...(isSelected ? [styles.optionActive] : []),
+            ]}
+            textStyle={[
+              styles.text,
+              ...(isSelected ? [styles.textActive] : []),
+            ]}
+          />
         );
       }}
     />

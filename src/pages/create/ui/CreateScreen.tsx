@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
-import { Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Text, StyleSheet } from "react-native";
 import { useTodoStore } from "@/entities/todo";
 
 import SelectModal from "./SelectModal";
@@ -76,10 +76,12 @@ export default function Create() {
         onSelect={setStatus}
         onClose={() => setStatusModalVisible(false)}
       />
-
-      <TouchableOpacity onPress={handleAdd} style={styles.addButton}>
-        <Text style={styles.addButtonText}>Add Task</Text>
-      </TouchableOpacity>
+      <Button
+        label="Add Task"
+        onPress={handleAdd}
+        style={styles.addButton}
+        textStyle={styles.addButtonText}
+      />
     </SafeAreaView>
   );
 }
