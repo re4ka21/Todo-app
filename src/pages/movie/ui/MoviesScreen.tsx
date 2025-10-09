@@ -161,6 +161,8 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#047857",
     marginBottom: 10,
+    width: "92%",
+    alignSelf: "center",
   },
   buttonText: {
     color: "#fff",

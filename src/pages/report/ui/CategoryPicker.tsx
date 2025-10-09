@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Modal, StyleSheet } from "react-native";
+import { View, Text, Modal, StyleSheet } from "react-native";
 import { TicketCategory } from "@/shared/constants/categories";
 import { OptionList } from "@/shared/OptionList";
 import { Button } from "@/shared/Button";
+import InputField from "@/shared/InputField/ui/InputField";
+
 type Props = {
   category: TicketCategory;
   setCategory: (value: TicketCategory) => void;
@@ -21,12 +23,7 @@ export default function CategoryPicker({ category, setCategory }: Props) {
     <View style={styles.wrapper}>
       <Text style={styles.label}>Category</Text>
       <View style={styles.row}>
-        <TextInput
-          style={styles.input}
-          placeholder="Placeholder"
-          value={category}
-          editable={false}
-        />
+        <InputField style={styles.input} value={category} editable={false} />
         <Button
           label="Select"
           onPress={() => setModalVisible(true)}
@@ -66,14 +63,16 @@ const styles = StyleSheet.create({
   label: { fontWeight: "600", marginBottom: 6 },
   row: { flexDirection: "row", alignItems: "center", gap: 8 },
   input: {
+    flex: 1,
+    fontSize: 14,
     borderWidth: 1,
     borderColor: "#047857",
     borderRadius: 8,
     padding: 10,
-    flex: 1,
-    fontSize: 14,
+    backgroundColor: "#fff",
+    width: 320,
   },
-  selectBtn: { color: "teal", fontWeight: "600" },
+  selectBtn: { color: "teal", fontWeight: "600", marginBottom: 12 },
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.3)",
@@ -93,12 +92,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textAlign: "center",
   },
-  modalItem: {
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
-  modalItemText: { fontSize: 16, color: "#333" },
   modalCloseBtn: {
     marginTop: 12,
     alignSelf: "center",

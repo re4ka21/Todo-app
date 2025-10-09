@@ -1,7 +1,8 @@
 import React, { useState, useCallback } from "react";
-import { View, TextInput, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/shared/Button";
+import InputField from "@/shared/InputField/ui/InputField";
 import { baseURL } from "@/shared/api/ApiConfig";
 
 type Movie = {
@@ -42,25 +43,26 @@ export const AddMovie = () => {
   }, [title, director, genre]);
 
   return (
-    <View>
-      <TextInput
-        style={styles.input}
-        placeholder="Title"
+    <View style={styles.container}>
+      <InputField
+        label="Title"
+        placeholder="Enter title"
         value={title}
         onChangeText={setTitle}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Director"
+      <InputField
+        label="Director"
+        placeholder="Enter director"
         value={director}
         onChangeText={setDirector}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Genre"
+      <InputField
+        label="Genre"
+        placeholder="Enter genre"
         value={genre}
         onChangeText={setGenre}
       />
+
       <Button
         label="Add Movie"
         onPress={handleAdd}
@@ -72,17 +74,12 @@ export const AddMovie = () => {
 };
 
 const styles = StyleSheet.create({
-  input: {
-    borderWidth: 1,
-    borderColor: "#D1D5DB",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 8,
-    backgroundColor: "#fff",
+  container: {
+    padding: 16,
   },
   button: {
     backgroundColor: "#047857",
-    marginBottom: 10,
+    marginTop: 10,
   },
   buttonText: {
     color: "#fff",
